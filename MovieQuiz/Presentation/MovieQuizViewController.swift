@@ -22,18 +22,18 @@ struct QuizScoreViewModel {
 }
 
 struct QuizAnswered {
-    var succesful: [QuizQuestion] = []
+    var successful: [QuizQuestion] = []
     var failed: [QuizQuestion] = []
 
     // MARK: - Public methods
 
     func position() -> Int {
-        return succesful.count + failed.count
+        return successful.count + failed.count
     }
 
     mutating func store(question: QuizQuestion, result: Bool) {
         result
-            ? succesful.append(question)
+            ? successful.append(question)
             : failed.append(question)
     }
 }
@@ -44,8 +44,8 @@ struct QuizAnswered {
 final class MovieQuizViewController: UIViewController {
     // MARK: - Properties
 
-    var quizes: [Quiz] = []
-    var currentQuiz: Quiz?
+    private var quizes: [Quiz] = []
+    private var currentQuiz: Quiz?
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
@@ -180,7 +180,7 @@ final class MovieQuizViewController: UIViewController {
         quizImageView.layer.cornerRadius = 20
         quizQuestionLabel.font = UIFont(name: StyleDefault.fontBold, size: 23.0)
 
-        print("✅ Configurated storyboard")
+        print("✅ Configured storyboard")
     }
 
     private func animateOverlayColorAlert(_ overlay: CALayer, color: UIColor, alpha: CGFloat = 0.6) {
@@ -256,8 +256,8 @@ class Quiz {
         print("🏁 Completed quiz")
     }
 
-    func percentAccuraty() -> Float {
-        return Float(answered.succesful.count) / Float(questions.count) * 100
+    func percentAccuracy() -> Float {
+        return Float(answered.successful.count) / Float(questions.count) * 100
     }
 
     // MARK: - Private methods
@@ -355,7 +355,7 @@ class ViewScore {
 
     func alertComplete(closure: @escaping () -> Void) -> UIAlertController {
         let scoreModel = QuizScoreViewModel(
-            title: currentQuiz.answered.succesful.count == currentQuiz.questions.count
+            title: currentQuiz.answered.successful.count == currentQuiz.questions.count
                 ? "🎉 Победа!"
                 : "Этот раунд окончен",
             message: message(),
@@ -378,7 +378,7 @@ class ViewScore {
         return alert
     }
 
-    // MARK: - Privete methods
+    // MARK: - Private methods
 
     private func message() -> String {
         guard let lastQuiz = quizes.last else { return "" }
@@ -386,22 +386,22 @@ class ViewScore {
         guard let bestDateString = bestResult.completedAt else { return "" }
 
         let bestScoreString = [
-            "\(bestResult.answered.succesful.count)/\(bestResult.questions.count)",
+            "\(bestResult.answered.successful.count)/\(bestResult.questions.count)",
             "(\(bestDateString.dateTimeString))"
         ].joined(separator: " ")
 
         return [
-            "Ваш результат: \(lastQuiz.answered.succesful.count)/\(lastQuiz.questions.count)",
+            "Ваш результат: \(lastQuiz.answered.successful.count)/\(lastQuiz.questions.count)",
             "Количество сыграных квизов: \(quizes.count)",
             "Рекорд: \(bestScoreString)",
-            "Средняя точность: \(NSString(format: "%.2f", accuratyAvg()))%"
+            "Средняя точность: \(NSString(format: "%.2f", accuracyAvg()))%"
         ].joined(separator: "\n")
     }
 
     /// Search the best quiz
     private func bestResult() -> Quiz? {
         guard var bestScore = quizes.first else { return nil }
-        for score in quizes where score.answered.succesful.count > bestScore.answered.succesful.count {
+        for score in quizes where score.answered.successful.count > bestScore.answered.successful.count {
             bestScore = score
         }
 
@@ -409,12 +409,12 @@ class ViewScore {
     }
 
     /// Search for the average accuracy of quizzes
-    private func accuratyAvg() -> Float {
-        var accuraties: [Float] = []
+    private func accuracyAvg() -> Float {
+        var accuracies: [Float] = []
 
-        for quiz in quizes { accuraties.append(quiz.percentAccuraty()) }
+        for quiz in quizes { accuracies.append(quiz.percentAccuracy()) }
 
-        return accuraties.reduce(0, +) / Float(accuraties.count)
+        return accuracies.reduce(0, +) / Float(accuracies.count)
     }
 }
 
