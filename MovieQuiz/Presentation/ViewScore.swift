@@ -16,12 +16,12 @@ class ViewScore {
 
     let quiz: Quiz
     let store: [Quiz]
-    let delegate: UIViewController
+    let view: UIViewController
 
-    init(store: [Quiz], quiz: Quiz, delegate: UIViewController) {
+    init(store: [Quiz], quiz: Quiz, view: UIViewController) {
         self.store = store
         self.quiz = quiz
-        self.delegate = delegate
+        self.view = view
     }
 
     // MARK: - Public methods
@@ -48,7 +48,7 @@ class ViewScore {
 
         alert.addAction(action)
 
-        delegate.present(alert, animated: true) {
+        view.present(alert, animated: true) {
             // поиск слоя с фоном алерта
             guard let window = UIApplication.shared.windows.first else { return }
             guard let overlay = window.subviews.last?.layer.sublayers?.first else { return }

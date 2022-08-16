@@ -98,7 +98,7 @@ final class MovieQuizViewController: UIViewController {
 
     /// Showing alert message score
     private func showScore(quiz: Quiz) {
-        let score = ViewScore(store: store, quiz: quiz, delegate: self)
+        let score = ViewScore(store: store, quiz: quiz, view: self)
 
         score.alertComplete {
             self.createQuiz()
