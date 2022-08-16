@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 enum StyleDefault {
     static let fontBold = "YSDisplay-Bold"
