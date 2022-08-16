@@ -6,8 +6,8 @@ import UIKit
 final class MovieQuizViewController: UIViewController {
     // MARK: - Properties
 
-    var store: [Quiz] = []
-    var quiz = Quiz()
+    private var store: [Quiz] = []
+    private var quiz = Quiz()
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
