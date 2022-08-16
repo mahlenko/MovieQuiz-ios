@@ -28,7 +28,7 @@ class ViewScore {
 
     func alertComplete(closure: @escaping () -> Void) {
         let scoreModel = QuizScoreViewModel(
-            title: quiz.answered.succesful.count == quiz.countAnsweredToComplete
+            title: quiz.answered.successful.count == quiz.countAnsweredToComplete
                 ? "🎉 Победа!"
                 : "Этот раунд окончен",
             message: message(),
@@ -58,7 +58,7 @@ class ViewScore {
         }
     }
 
-    // MARK: - Privete methods
+    // MARK: - Private methods
 
     private func message() -> String {
         guard let lastQuiz = store.last else { return "" }
@@ -66,15 +66,15 @@ class ViewScore {
         guard let bestDateString = bestResult.completedAt else { return "" }
 
         let bestScoreString = [
-            "\(bestResult.answered.succesful.count)/\(bestResult.countAnsweredToComplete)",
+            "\(bestResult.answered.successful.count)/\(bestResult.countAnsweredToComplete)",
             "(\(bestDateString.dateTimeString))"
         ].joined(separator: " ")
 
         return [
-            "Ваш результат: \(lastQuiz.answered.succesful.count)/\(lastQuiz.countAnsweredToComplete)",
+            "Ваш результат: \(lastQuiz.answered.successful.count)/\(lastQuiz.countAnsweredToComplete)",
             "Количество сыграных квизов: \(store.count)",
             "Рекорд: \(bestScoreString)",
-            "Средняя точность: \(NSString(format: "%.2f", accuratyAvg()))%"
+            "Средняя точность: \(NSString(format: "%.2f", accuracyAvg()))%"
         ].joined(separator: "\n")
     }
 
@@ -83,7 +83,7 @@ class ViewScore {
         guard var bestScore = store.first else { return nil }
 
         for score in store
-            where score.answered.succesful.count > bestScore.answered.succesful.count {
+            where score.answered.successful.count > bestScore.answered.successful.count {
                 bestScore = score
             }
 
@@ -91,12 +91,12 @@ class ViewScore {
     }
 
     /// Search for the average accuracy of quizzes
-    private func accuratyAvg() -> Float {
-        var accuraties: [Float] = []
+    private func accuracyAvg() -> Float {
+        var accuracies: [Float] = []
 
-        for quiz in store { accuraties.append(quiz.percentAccuraty()) }
+        for quiz in store { accuracies.append(quiz.percentAccuracy()) }
 
-        return accuraties.reduce(0, +) / Float(accuraties.count)
+        return accuracies.reduce(0, +) / Float(accuracies.count)
     }
 
     private func animateOverlayColorAlert(_ overlay: CALayer, color: UIColor, alpha: CGFloat = 0.6) {

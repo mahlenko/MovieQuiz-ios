@@ -57,9 +57,9 @@ class Quiz {
         print("🏁 Completed quiz")
     }
 
-    func percentAccuraty() -> Float {
-        let countAnswered = answered.succesful.count + answered.failed.count
-        return Float(answered.succesful.count) / Float(countAnswered) * 100
+    func percentAccuracy() -> Float {
+        let countAnswered = answered.successful.count + answered.failed.count
+        return Float(answered.successful.count) / Float(countAnswered) * 100
     }
 
     // MARK: - Private methods

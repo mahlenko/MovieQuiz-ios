@@ -10,18 +10,18 @@ import Foundation
 struct AnsweredStore {
     // MARK: - Properties
 
-    var succesful: [QuizQuestion] = []
+    var successful: [QuizQuestion] = []
     var failed: [QuizQuestion] = []
 
     // MARK: - Public methods
 
     func position() -> Int {
-        return succesful.count + failed.count
+        return successful.count + failed.count
     }
 
     mutating func store(question: QuizQuestion, result: Bool) {
         result
-            ? succesful.append(question)
+            ? successful.append(question)
             : failed.append(question)
     }
 }

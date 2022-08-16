@@ -96,7 +96,7 @@ final class MovieQuizViewController: UIViewController {
         }
     }
 
-    /// Showing alert message scrore
+    /// Showing alert message score
     private func showScore(quiz: Quiz) {
         let score = ViewScore(store: store, quiz: quiz, delegate: self)
 
@@ -144,6 +144,6 @@ final class MovieQuizViewController: UIViewController {
         quizImageView.layer.cornerRadius = 20
         quizQuestionLabel.font = UIFont(name: StyleDefault.fontBold, size: 23.0)
 
-        print("✅ Configurated storyboard")
+        print("✅ Configured storyboard")
     }
 }
