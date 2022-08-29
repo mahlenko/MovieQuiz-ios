@@ -25,8 +25,7 @@ extension MovieQuizViewController {
     }
 
     internal func enableControls(_ enable: Bool) {
-        trueButton.isEnabled = enable
-        falseButton.isEnabled = enable
+        [trueButton, falseButton].forEach { $0?.isEnabled = enable }
     }
 
     internal func configuration() {
