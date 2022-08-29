@@ -6,10 +6,7 @@
 //
 
 import Foundation
-import UIKit
 
 protocol AlertFactoryProtocol {
-    var title: String { get }
-    var message: String { get }
-    var actions: [UIAlertAction] { get }
+    func show()
 }

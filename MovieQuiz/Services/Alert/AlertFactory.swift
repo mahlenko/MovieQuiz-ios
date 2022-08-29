@@ -14,20 +14,16 @@ import UIKit
 class AlertFactory {
     // MARK: - Properties
 
-    /// Alert model
-    private let alert: AlertFactoryProtocol
-
     /// View for showing alert
     private let delegate: UIViewController
 
-    init(_ alert: AlertFactoryProtocol, delegate: UIViewController) {
-        self.alert = alert
+    init(delegate: UIViewController) {
         self.delegate = delegate
     }
 
     // MARK: - Public methods
 
-    public func show() {
+    public func show(_ alert: AlertViewFactoryProtocol) {
         let alertController = UIAlertController(
             title: alert.title,
             message: alert.message,

@@ -87,9 +87,7 @@ final class MovieQuizViewController: UIViewController {
         // Save complete quiz
         self.storage.store(quiz: quiz)
 
-        AlertFactory(
-            ScoreAlertViewModel(storage: storage) { [self] in createQuiz() },
-            delegate: self
-        ).show()
+        AlertFactory(delegate: self)
+            .show(ScoreAlertViewModel(storage: storage) { [self] in createQuiz() })
     }
 }
