@@ -52,7 +52,7 @@ class ResultAlertPresenter {
             else { return }
 
             // замена цвета фона
-            self.animateOverlayColorAlert(overlay, color: ThemeAlert.overlayColor)
+            self.animateOverlayColorAlert(overlay)
         }
     }
 
@@ -90,19 +90,16 @@ class ResultAlertPresenter {
 
     // MARK: - Helpers
 
-    private func animateOverlayColorAlert(
-        _ overlay: CALayer,
-        color: UIColor,
-        alpha: CGFloat = 0.6
-    ) {
+    private func animateOverlayColorAlert(_ overlay: CALayer) {
         let animation = CABasicAnimation(keyPath: "backgroundColor")
         animation.timingFunction = CAMediaTimingFunction(name: .easeOut)
-        animation.speed = 0.15
+        animation.speed = 0.2
+        animation.fromValue = overlay.backgroundColor
 
         overlay.add(animation, forKey: nil)
 
         DispatchQueue.main.async {
-            overlay.backgroundColor = color.withAlphaComponent(alpha).cgColor
+            overlay.backgroundColor = UIColor.overlay.cgColor
         }
     }
 }

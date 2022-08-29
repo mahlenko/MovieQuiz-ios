@@ -20,7 +20,6 @@
 		A551467D28AAED0E00996A13 /* ThemeFonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = A551467C28AAED0E00996A13 /* ThemeFonts.swift */; };
 		A57EB35828A53DD700BC9A74 /* YS Display-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A57EB35628A53DD700BC9A74 /* YS Display-Bold.ttf */; };
 		A57EB35928A53DD700BC9A74 /* YS Display-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A57EB35728A53DD700BC9A74 /* YS Display-Medium.ttf */; };
-		A588934E28BC196D003711AD /* ThemeAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = A588934D28BC196D003711AD /* ThemeAlert.swift */; };
 		A588935028BC1C2C003711AD /* State+Controls+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A588934F28BC1C2C003711AD /* State+Controls+Extensions.swift */; };
 		A588935228BC1D65003711AD /* StorageFactoryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = A588935128BC1D65003711AD /* StorageFactoryProtocol.swift */; };
 		A588935428BC1E82003711AD /* StorageStaticFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = A588935328BC1E82003711AD /* StorageStaticFactory.swift */; };
@@ -49,7 +48,6 @@
 		A551467C28AAED0E00996A13 /* ThemeFonts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeFonts.swift; sourceTree = "<group>"; };
 		A57EB35628A53DD700BC9A74 /* YS Display-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "YS Display-Bold.ttf"; sourceTree = "<group>"; };
 		A57EB35728A53DD700BC9A74 /* YS Display-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "YS Display-Medium.ttf"; sourceTree = "<group>"; };
-		A588934D28BC196D003711AD /* ThemeAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeAlert.swift; sourceTree = "<group>"; };
 		A588934F28BC1C2C003711AD /* State+Controls+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "State+Controls+Extensions.swift"; sourceTree = "<group>"; };
 		A588935128BC1D65003711AD /* StorageFactoryProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageFactoryProtocol.swift; sourceTree = "<group>"; };
 		A588935328BC1E82003711AD /* StorageStaticFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageStaticFactory.swift; sourceTree = "<group>"; };
@@ -134,7 +132,6 @@
 				A551467428AACA6600996A13 /* UIButton+Theme.swift */,
 				A551467228AACA4800996A13 /* UILabel+Theme.swift */,
 				A551467C28AAED0E00996A13 /* ThemeFonts.swift */,
-				A588934D28BC196D003711AD /* ThemeAlert.swift */,
 			);
 			path = Theme;
 			sourceTree = "<group>";
@@ -295,7 +292,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A588934E28BC196D003711AD /* ThemeAlert.swift in Sources */,
 				AD5EE5DE284D7887003966EF /* UIColor+Extensions.swift in Sources */,
 				AD7AFA552836189F00399704 /* Array+Extensions.swift in Sources */,
 				A551467328AACA4800996A13 /* UILabel+Theme.swift in Sources */,
@@ -459,7 +455,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = QMTD3Q9RGC;
@@ -490,7 +485,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = QMTD3Q9RGC;
