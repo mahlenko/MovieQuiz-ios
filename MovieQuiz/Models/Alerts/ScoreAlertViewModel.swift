@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class ScoreAlertModel: AlertFactoryProtocol {
+class ScoreAlertViewModel: AlertFactoryProtocol {
     // MARK: - Alert protocol properties
 
     public var title: String {

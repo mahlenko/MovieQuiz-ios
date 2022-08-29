@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class Quiz {
+class QuizModel {
     // MARK: - Properties
 
     var answered = AnsweredStore()

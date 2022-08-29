@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A511F0B228BD61D8000230AD /* ScoreAlertModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A511F0B128BD61D8000230AD /* ScoreAlertModel.swift */; };
+		A511F0B228BD61D8000230AD /* ScoreAlertViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A511F0B128BD61D8000230AD /* ScoreAlertViewModel.swift */; };
 		A511F0B628BD6280000230AD /* AlertFactoryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = A511F0B528BD6280000230AD /* AlertFactoryProtocol.swift */; };
 		A5177C6228BBACD200C3C2ED /* QuestionFactoryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5177C6128BBACD200C3C2ED /* QuestionFactoryProtocol.swift */; };
 		A551466828AAAD7700996A13 /* QuestionMockFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = A551466728AAAD7700996A13 /* QuestionMockFactory.swift */; };
@@ -17,7 +17,7 @@
 		A551467328AACA4800996A13 /* UILabel+Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A551467228AACA4800996A13 /* UILabel+Theme.swift */; };
 		A551467528AACA6600996A13 /* UIButton+Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A551467428AACA6600996A13 /* UIButton+Theme.swift */; };
 		A551467828AAD31B00996A13 /* AlertFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = A551467728AAD31B00996A13 /* AlertFactory.swift */; };
-		A551467A28AAEC8100996A13 /* Quiz.swift in Sources */ = {isa = PBXBuildFile; fileRef = A551467928AAEC8100996A13 /* Quiz.swift */; };
+		A551467A28AAEC8100996A13 /* QuizModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A551467928AAEC8100996A13 /* QuizModel.swift */; };
 		A551467D28AAED0E00996A13 /* ThemeFonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = A551467C28AAED0E00996A13 /* ThemeFonts.swift */; };
 		A57EB35828A53DD700BC9A74 /* YS Display-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A57EB35628A53DD700BC9A74 /* YS Display-Bold.ttf */; };
 		A57EB35928A53DD700BC9A74 /* YS Display-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A57EB35728A53DD700BC9A74 /* YS Display-Medium.ttf */; };
@@ -36,7 +36,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		A511F0B128BD61D8000230AD /* ScoreAlertModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreAlertModel.swift; sourceTree = "<group>"; };
+		A511F0B128BD61D8000230AD /* ScoreAlertViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreAlertViewModel.swift; sourceTree = "<group>"; };
 		A511F0B528BD6280000230AD /* AlertFactoryProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertFactoryProtocol.swift; sourceTree = "<group>"; };
 		A5177C6128BBACD200C3C2ED /* QuestionFactoryProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionFactoryProtocol.swift; sourceTree = "<group>"; };
 		A551466728AAAD7700996A13 /* QuestionMockFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionMockFactory.swift; sourceTree = "<group>"; };
@@ -46,7 +46,7 @@
 		A551467228AACA4800996A13 /* UILabel+Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+Theme.swift"; sourceTree = "<group>"; };
 		A551467428AACA6600996A13 /* UIButton+Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+Theme.swift"; sourceTree = "<group>"; };
 		A551467728AAD31B00996A13 /* AlertFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertFactory.swift; sourceTree = "<group>"; };
-		A551467928AAEC8100996A13 /* Quiz.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Quiz.swift; sourceTree = "<group>"; };
+		A551467928AAEC8100996A13 /* QuizModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizModel.swift; sourceTree = "<group>"; };
 		A551467C28AAED0E00996A13 /* ThemeFonts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeFonts.swift; sourceTree = "<group>"; };
 		A57EB35628A53DD700BC9A74 /* YS Display-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "YS Display-Bold.ttf"; sourceTree = "<group>"; };
 		A57EB35728A53DD700BC9A74 /* YS Display-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "YS Display-Medium.ttf"; sourceTree = "<group>"; };
@@ -119,7 +119,7 @@
 		A511F0B728BD70BB000230AD /* Alerts */ = {
 			isa = PBXGroup;
 			children = (
-				A511F0B128BD61D8000230AD /* ScoreAlertModel.swift */,
+				A511F0B128BD61D8000230AD /* ScoreAlertViewModel.swift */,
 			);
 			path = Alerts;
 			sourceTree = "<group>";
@@ -129,7 +129,7 @@
 			children = (
 				A551466928AAC96000996A13 /* QuizQuestionModel.swift */,
 				A551466B28AAC98700996A13 /* QuizQuestionViewModel.swift */,
-				A551467928AAEC8100996A13 /* Quiz.swift */,
+				A551467928AAEC8100996A13 /* QuizModel.swift */,
 			);
 			path = Quiz;
 			sourceTree = "<group>";
@@ -322,7 +322,7 @@
 				AD5EE5DE284D7887003966EF /* UIColor+Extensions.swift in Sources */,
 				AD7AFA552836189F00399704 /* Array+Extensions.swift in Sources */,
 				A551467328AACA4800996A13 /* UILabel+Theme.swift in Sources */,
-				A511F0B228BD61D8000230AD /* ScoreAlertModel.swift in Sources */,
+				A511F0B228BD61D8000230AD /* ScoreAlertViewModel.swift in Sources */,
 				A551467D28AAED0E00996A13 /* ThemeFonts.swift in Sources */,
 				A511F0B628BD6280000230AD /* AlertFactoryProtocol.swift in Sources */,
 				A551466C28AAC98700996A13 /* QuizQuestionViewModel.swift in Sources */,
@@ -336,7 +336,7 @@
 				AD77F5742857F8810062FB14 /* Date+Extensions.swift in Sources */,
 				A551466A28AAC96000996A13 /* QuizQuestionModel.swift in Sources */,
 				AD1ABAB22831907B00B3E448 /* AppDelegate.swift in Sources */,
-				A551467A28AAEC8100996A13 /* Quiz.swift in Sources */,
+				A551467A28AAEC8100996A13 /* QuizModel.swift in Sources */,
 				A551467828AAD31B00996A13 /* AlertFactory.swift in Sources */,
 				A588935428BC1E82003711AD /* StorageStaticFactory.swift in Sources */,
 				AD1ABAB42831907B00B3E448 /* SceneDelegate.swift in Sources */,

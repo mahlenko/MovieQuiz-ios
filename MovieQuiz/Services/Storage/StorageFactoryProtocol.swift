@@ -8,7 +8,7 @@
 import Foundation
 
 protocol StorageFactoryProtocol {
-    func all() -> [Quiz]
-    func store(quiz: Quiz)
-    func bestQuiz() -> Quiz?
+    func all() -> [QuizModel]
+    func store(quiz: QuizModel)
+    func bestQuiz() -> QuizModel?
 }
