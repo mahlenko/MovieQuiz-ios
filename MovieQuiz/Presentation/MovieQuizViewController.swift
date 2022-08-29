@@ -8,6 +8,8 @@ final class MovieQuizViewController: UIViewController {
 
     private var storage: StorageFactoryProtocol = StorageStaticFacrory()
 
+    private let scoreView: AlertFactoryProtocol = AlertFactory()
+
     private var quiz: QuizModel?
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -87,7 +89,8 @@ final class MovieQuizViewController: UIViewController {
         // Save complete quiz
         self.storage.store(quiz: quiz)
 
-        AlertFactory(delegate: self)
-            .show(ScoreAlertViewModel(storage: storage) { [self] in createQuiz() })
+        scoreView.show(
+            delegate: self,
+            ScoreAlertViewModel(storage: storage) { [self] in createQuiz() })
     }
 }

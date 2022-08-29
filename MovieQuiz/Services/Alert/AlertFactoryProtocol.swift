@@ -6,7 +6,8 @@
 //
 
 import Foundation
+import UIKit
 
 protocol AlertFactoryProtocol {
-    func show()
+    func show(delegate: UIViewController, _ alert: AlertViewFactoryProtocol)
 }
