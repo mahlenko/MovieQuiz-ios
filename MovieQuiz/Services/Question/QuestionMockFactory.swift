@@ -7,7 +7,7 @@
 
 import Foundation
 
-class QuestionFactory {
+class QuestionMockFactory: QuestionFactoryProtocol {
     // MARK: - Properties
 
     private let questions: [QuizQuestion] = [

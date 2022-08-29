@@ -13,7 +13,7 @@ class UILabelTheme: UILabel {
         super.init(coder: coder)
 
         font = UIFont(
-            name: StyleDefault.fontMedium,
-            size: StyleDefault.fontSize)
+            name: ThemeFonts.family.medium,
+            size: ThemeFonts.size.default)
     }
 }

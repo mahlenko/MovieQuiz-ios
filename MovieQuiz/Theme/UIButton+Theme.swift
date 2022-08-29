@@ -13,12 +13,12 @@ class UIButtonTheme: UIButton {
         super.init(coder: coder)
 
         layer.cornerRadius = 15
-        tintColor = UIColor.appBackground
-        backgroundColor = UIColor.appDefault
+        backgroundColor = UIColor.accent
+        tintColor = UIColor.background
 
         titleLabel?.font = UIFont(
-            name: StyleDefault.fontBold,
-            size: StyleDefault.fontSize)
+            name: ThemeFonts.family.bold,
+            size: ThemeFonts.size.default)
 
         self.titleEdgeInsets = UIEdgeInsets(
             top: 18.0,

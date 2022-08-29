@@ -6,8 +6,9 @@ import UIKit
 final class MovieQuizViewController: UIViewController {
     // MARK: - Properties
 
-    private var store: [Quiz] = []
-    private var quiz = Quiz()
+//    private var store: [Quiz] = []
+    private var storage: StorageFactoryProtocol = StorageStaticFacrory()
+    private var quiz: Quiz?
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
@@ -17,16 +18,16 @@ final class MovieQuizViewController: UIViewController {
         return .portrait
     }
 
-    // MARK: - IBOutlets
+    // MARK: - Outlets
 
-    @IBOutlet private var viewContainer: UIView!
+    @IBOutlet internal var viewContainer: UIView!
     @IBOutlet private weak var quizStepsLabel: UILabelTheme!
-    @IBOutlet private weak var quizImageView: UIImageView!
-    @IBOutlet private weak var quizQuestionLabel: UILabel!
-    @IBOutlet private weak var falseButton: UIButtonTheme!
-    @IBOutlet private weak var trueButton: UIButtonTheme!
+    @IBOutlet internal weak var quizImageView: UIImageView!
+    @IBOutlet internal weak var quizQuestionLabel: UILabel!
+    @IBOutlet internal weak var falseButton: UIButtonTheme!
+    @IBOutlet internal weak var trueButton: UIButtonTheme!
 
-    // MARK: - IBActions
+    // MARK: - Actions
 
     @IBAction private func falseButtonClicked(_ sender: Any) {
         checkAnswer(answer: false)
@@ -41,13 +42,7 @@ final class MovieQuizViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configuration()
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-
-        guard let firstQuestion = quiz.nextQuestion() else { return }
-        show(question: firstQuestion)
+        createQuiz()
     }
 
     // MARK: - Private methods
@@ -55,9 +50,12 @@ final class MovieQuizViewController: UIViewController {
     /// Creating new quiz (start/continue)
     private func createQuiz() {
         quiz = Quiz()
+        showNextQuestion()
+    }
 
-        guard let firstQuestion = quiz.nextQuestion() else { return }
-        show(question: firstQuestion)
+    private func showNextQuestion() {
+        guard let question = quiz?.nextQuestion() else { return }
+        show(question: question)
     }
 
     /// Show the quiz on the screen
@@ -65,85 +63,31 @@ final class MovieQuizViewController: UIViewController {
         quizImageView.image = question.image
         quizQuestionLabel.text = question.question
         quizStepsLabel.text = question.stepsTextLabel
-
-        print(String("Showed a quiz question #\(self.quiz.answered.position() + 1)"))
     }
 
     private func checkAnswer(answer: Bool) {
-        enableButtons(enable: false)
+        guard let quiz = quiz else { return }
 
-        let isCorrectResult = quiz.checkAnswer(answer: answer)
+        enableControls(false)
 
-        if isCorrectResult == true {
-            showSuccessImageView()
-            print("🎉 The answer is correct")
-        } else if isCorrectResult == false {
-            showFailedImageView()
-            print("😔 The answer is NOT correct")
+        if let isCorrectResult = quiz.checkAnswer(answer: answer) {
+            isCorrectResult ? successImageView() : failedImageView()
         }
 
         // Go to the next question or wait for results with a delay of 1 second
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            self.enableButtons(enable: true)
+            self.enableControls(true)
             self.setImageBorderView()
-
-            if self.quiz.isComplete() {
-                self.completeQuiz(quiz: self.quiz)
-            } else {
-                guard let nextQuestion = self.quiz.nextQuestion() else { return }
-                self.show(question: nextQuestion)
-            }
-        }
-    }
-
-    /// Showing alert message score
-    private func showScore(quiz: Quiz) {
-        let score = ViewScore(store: store, quiz: quiz, view: self)
-
-        score.alertComplete {
-            self.createQuiz()
+            quiz.isComplete() ? self.completeQuiz(quiz: quiz) : self.showNextQuestion()
         }
     }
 
     /// Closed this quiz
     private func completeQuiz(quiz: Quiz) {
-        quiz.complete(date: Date())
+        self.storage.store(quiz: quiz)
 
-        self.storeScore(quiz: quiz)
-        self.showScore(quiz: quiz)
-    }
-
-    private func storeScore(quiz: Quiz) {
-        self.store.append(quiz)
-    }
-
-    private func setImageBorderView(color: UIColor? = .none, width: CGFloat = .nan) {
-        self.quizImageView.layer.borderColor = color?.cgColor
-        self.quizImageView.layer.borderWidth = width
-    }
-
-    private func showSuccessImageView() {
-        return setImageBorderView(
-            color: UIColor.appSuccess,
-            width: StyleDefault.borderWidthShowResult)
-    }
-
-    private func showFailedImageView() {
-        return setImageBorderView(
-            color: UIColor.appFail,
-            width: StyleDefault.borderWidthShowResult)
-    }
-
-    private func enableButtons(enable: Bool) {
-        trueButton.isEnabled = enable
-        falseButton.isEnabled = enable
-    }
-
-    private func configuration() {
-        viewContainer.backgroundColor = UIColor.appBackground
-        quizImageView.layer.cornerRadius = 20
-        quizQuestionLabel.font = UIFont(name: StyleDefault.fontBold, size: 23.0)
-
-        print("✅ Configured storyboard")
+        ResultAlertPresenter(storage: storage, delegate: self).show {
+            self.createQuiz()
+        }
     }
 }

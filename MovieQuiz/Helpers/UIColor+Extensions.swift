@@ -1,12 +1,9 @@
 import UIKit
 
 extension UIColor {
-    // swiftlint:disable force_unwrapping
-    static var appBackdrop: UIColor { UIColor(named: "backdrop")! }
-    static var appBackground: UIColor { UIColor(named: "background")! }
-    static var appDefault: UIColor { UIColor(named: "default")! }
-    static var appFail: UIColor { UIColor(named: "fail")! }
-    static var appSuccess: UIColor { UIColor(named: "success")! }
-    static var appSecondary: UIColor { UIColor(named: "secondary")! }
-    // swiftlint:enable force_unwrapping
+    static var background: UIColor { UIColor(named: "background") ?? .black }
+    static var accent: UIColor { UIColor(named: "default") ?? .white }
+    static var fail: UIColor { UIColor(named: "fail") ?? .red }
+    static var success: UIColor { UIColor(named: "success") ?? .green }
+    static var secondary: UIColor { UIColor(named: "secondary") ?? .darkGray }
 }
