@@ -25,7 +25,7 @@ class ScoreAlertViewModel: AlertViewFactoryProtocol {
             "Ваш результат: \(storage.all().last?.current ?? "")\n" +
             "Количество сыграных квизов: \(storage.all().count)\n" +
             "Рекорд: \(bestScoreText())\n" +
-            "Средняя точность: \(accuracy())%"
+            "Средняя точность: \(round(accuracy()))%"
     }
 
     public var actions: [UIAlertAction] {
@@ -63,5 +63,9 @@ class ScoreAlertViewModel: AlertViewFactoryProtocol {
         }
 
         return Float(accuracies.reduce(0, +) / Float(accuracies.count))
+    }
+
+    private func round(_ number: Float) -> Float {
+        return Float(String(format: "%.2f", number)) ?? 0.00
     }
 }
