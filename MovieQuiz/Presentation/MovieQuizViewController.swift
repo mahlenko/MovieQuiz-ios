@@ -6,7 +6,7 @@ import UIKit
 final class MovieQuizViewController: UIViewController {
     // MARK: - Properties
 
-    private var storage: StorageFactoryProtocol = StorageStaticFacrory()
+    private var storage: StatisticServiceProtocol = StatisticDefaultService()
 
     private let scoreView: AlertFactoryProtocol = AlertFactory()
 
@@ -87,7 +87,13 @@ final class MovieQuizViewController: UIViewController {
     /// Closed this quiz
     private func completeQuiz(quiz: QuizModel) {
         // Save complete quiz
-        self.storage.store(quiz: quiz)
+        let statistic = StatisticViewModel(
+            current: quiz.resultText(),
+            avgAccuracy: quiz.percentAccuracy(),
+            completedAt: Date()
+        )
+
+        self.storage.store(statistic: statistic)
 
         scoreView.show(
             delegate: self,

@@ -54,7 +54,6 @@ class QuizModel {
     }
 
     public func complete(date: Date) {
-        self.completedAt = date
         print("🏁 Completed quiz")
     }
 

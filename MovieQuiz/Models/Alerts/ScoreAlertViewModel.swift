@@ -12,13 +12,13 @@ class ScoreAlertViewModel: AlertViewFactoryProtocol {
     // MARK: - Alert protocol properties
 
     public var title: String {
-        guard let quiz = storage.all().last else { return "😔 Произошла ошибка" }
-        return quiz.isWin() ? "🎉 Победа!" : "Этот раунд окончен"
+        guard let statistic = storage.all().last else { return "😔 Произошла ошибка" }
+        return statistic.avgAccuracy == 100.0 ? "🎉 Победа!" : "Этот раунд окончен"
     }
 
     public var message: String {
         return
-            "Ваш результат: \(storage.all().last?.resultText() ?? "")\n" +
+            "Ваш результат: \(storage.all().last?.current ?? "")\n" +
             "Количество сыграных квизов: \(storage.all().count)\n" +
             "Рекорд: \(bestScoreText())\n" +
             "Средняя точность: \(accuracy())%"
@@ -30,12 +30,12 @@ class ScoreAlertViewModel: AlertViewFactoryProtocol {
 
     // MARK: - Private properties
 
-    private let storage: StorageFactoryProtocol
+    private let storage: StatisticServiceProtocol
 
     /// Обратный вызов по единственной кнопке алерта
     private var callback: (() -> Void)
 
-    init(storage: StorageFactoryProtocol, callback: @escaping () -> Void) {
+    init(storage: StatisticServiceProtocol, callback: @escaping () -> Void) {
         self.storage = storage
         self.callback = callback
     }
@@ -53,19 +53,17 @@ class ScoreAlertViewModel: AlertViewFactoryProtocol {
 
     /// Результат лучшего сыгранного квиза
     private func bestScoreText() -> String {
-        guard
-            let bestQuiz = storage.bestQuiz(),
-            let completedAt = bestQuiz.completedAt
-        else { return "" }
-
-        return "\(bestQuiz.resultText()) (\(completedAt.dateTimeString))"
+        guard let bestQuiz = storage.bestQuiz() else { return "" }
+        return "\(bestQuiz.current) (\(bestQuiz.completedAt.dateTimeString))"
     }
 
     /// Средний результат сыгранных квизов
     private func accuracy() -> Float {
         var accuracies: [Float] = []
 
-        for quiz in storage.all() { accuracies.append(quiz.percentAccuracy()) }
+        for quiz in storage.all() {
+            accuracies.append(quiz.avgAccuracy)
+        }
 
         return Float(accuracies.reduce(0, +) / Float(accuracies.count))
     }
