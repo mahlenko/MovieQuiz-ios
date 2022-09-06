@@ -11,6 +11,7 @@ import Foundation
 
 final class StatisticDefaultService: StatisticServiceProtocol {
     // MARK: - Properties
+
     let key = "statistics"
 
     // MARK: - Public methods
@@ -51,7 +52,7 @@ final class StatisticDefaultService: StatisticServiceProtocol {
     func bestQuiz() -> StatisticViewModel? {
         guard var bestScore = self.all().first else { return nil }
 
-        for score in self.all() where score.avgAccuracy > bestScore.avgAccuracy {
+        for score in self.all() where score.avgAccuracy >= bestScore.avgAccuracy {
             bestScore = score
         }
 

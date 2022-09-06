@@ -29,7 +29,7 @@ final class StatisticMockService: StatisticServiceProtocol {
     func bestQuiz() -> StatisticViewModel? {
         guard var bestScore = all().first else { return nil }
 
-        for score in all() where score.avgAccuracy > bestScore.avgAccuracy {
+        for score in all() where score.avgAccuracy >= bestScore.avgAccuracy {
             bestScore = score
         }
 
