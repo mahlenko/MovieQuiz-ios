@@ -13,7 +13,6 @@ class QuizModel {
 
     var answered = AnsweredStore()
     let beginedAt: Date
-    var completedAt: Date?
     var counterLabelText: String?
     var questions: QuestionFactoryProtocol
     var currentQuestion: QuizQuestion?
@@ -51,10 +50,6 @@ class QuizModel {
 
     public func isComplete() -> Bool {
         return answered.position() == countAnsweredToComplete
-    }
-
-    public func complete(date: Date) {
-        print("🏁 Completed quiz")
     }
 
     public func percentAccuracy() -> Float {
