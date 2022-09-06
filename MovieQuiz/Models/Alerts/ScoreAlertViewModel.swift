@@ -9,7 +9,11 @@ import Foundation
 import UIKit
 
 class ScoreAlertViewModel: AlertViewFactoryProtocol {
-    // MARK: - Alert protocol properties
+    // MARK: - Properties
+
+    private let storage: StatisticServiceProtocol
+
+    private var callback: (() -> Void)
 
     public var title: String {
         guard let statistic = storage.all().last else { return "😔 Произошла ошибка" }
@@ -27,13 +31,6 @@ class ScoreAlertViewModel: AlertViewFactoryProtocol {
     public var actions: [UIAlertAction] {
         return [ restartAction() ]
     }
-
-    // MARK: - Private properties
-
-    private let storage: StatisticServiceProtocol
-
-    /// Обратный вызов по единственной кнопке алерта
-    private var callback: (() -> Void)
 
     init(storage: StatisticServiceProtocol, callback: @escaping () -> Void) {
         self.storage = storage
