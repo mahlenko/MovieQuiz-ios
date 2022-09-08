@@ -18,25 +18,44 @@ class QuizModel {
     var currentQuestion: QuizQuestion?
     let countAnsweredToComplete: Int = 10
 
-    init() {
-        beginedAt = Date()
-        questions = QuestionMockFactory()
-        counterLabelText = positionText()
-
+    init(questions: QuestionFactoryProtocol) {
+        self.beginedAt = Date()
+        self.questions = questions
+        self.counterLabelText = positionText()
         print("🎲 Created a new quiz and shuffled the questions.")
     }
 
     // MARK: - Public methods
 
-    public func nextQuestion() -> QuizStepViewModel? {
-        guard let question = questions.requestNextQuestion() else { return nil }
+    public func nextQuestion() {
+        DispatchQueue.global().async { [weak self] in
+            guard let self = self else { return }
+            guard let question = self.questions.requestNextQuestion() else { return }
 
-        self.currentQuestion = question
+            self.currentQuestion = question
 
-        return QuizStepViewModel(
-            image: UIImage(named: question.image) ?? UIImage(named: "Error"),
-            question: question.text,
-            stepsTextLabel: positionText())
+            var imageData: Data?
+
+            do {
+                guard let url = URL(string: question.image) else { return }
+                imageData = try Data(contentsOf: url)
+            } catch {}
+
+            guard let imageData = imageData else { return }
+            let image = UIImage(data: imageData) ?? UIImage(named: "Error")
+
+            let result = QuizStepViewModel(
+                image: image,
+                question: question.text,
+                stepsTextLabel: self.positionText())
+
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                guard let questions = self.questions as? QuestionIMDBFactory else { return }
+
+                questions.delegate.didReceiveNextQuestion(question: result)
+            }
+        }
     }
 
     public func checkAnswer(answer: Bool) -> Bool? {

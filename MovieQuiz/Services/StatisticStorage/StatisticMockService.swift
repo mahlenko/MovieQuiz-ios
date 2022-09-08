@@ -22,6 +22,16 @@ final class StatisticMockService: StatisticServiceProtocol {
         data.append(statistic)
     }
 
+    func average() -> Float {
+        var accuracies: [Float] = []
+
+        for statistic in all() {
+            accuracies.append(statistic.avgAccuracy)
+        }
+
+        return Float(accuracies.reduce(0, +) / Float(accuracies.count))
+    }
+
     func destroy() {
         self.data = []
     }

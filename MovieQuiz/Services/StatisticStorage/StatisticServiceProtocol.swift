@@ -9,5 +9,6 @@ protocol StatisticServiceProtocol {
     func all() -> [StatisticViewModel]
     func store(statistic: StatisticViewModel)
     func bestQuiz() -> StatisticViewModel?
+    func average() -> Float
     func destroy()
 }

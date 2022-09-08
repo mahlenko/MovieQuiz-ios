@@ -20,8 +20,6 @@ struct AnsweredStore {
     }
 
     mutating func store(question: QuizQuestion, result: Bool) {
-        result
-            ? successful.append(question)
-            : failed.append(question)
+        result ? successful.append(question) : failed.append(question)
     }
 }

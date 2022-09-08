@@ -59,6 +59,16 @@ final class StatisticDefaultService: StatisticServiceProtocol {
         return bestScore
     }
 
+    func average() -> Float {
+        var accuracies: [Float] = []
+
+        for statistic in all() {
+            accuracies.append(statistic.avgAccuracy)
+        }
+
+        return Float(accuracies.reduce(0, +) / Float(accuracies.count))
+    }
+
     func destroy() {
         UserDefaults.standard.removeObject(forKey: self.key)
     }

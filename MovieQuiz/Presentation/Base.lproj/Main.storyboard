@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21223" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina6_7" orientation="portrait" appearance="dark"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21204"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -19,9 +19,9 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="fFq-hE-6Yv">
-                                <rect key="frame" x="20" y="54" width="388" height="818"/>
+                                <rect key="frame" x="20" y="57" width="388" height="815"/>
                                 <subviews>
-                                    <stackView opaque="NO" contentMode="top" distribution="fillEqually" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="kCP-00-GcQ">
+                                    <stackView opaque="NO" contentMode="top" verticalCompressionResistancePriority="749" distribution="fillEqually" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="kCP-00-GcQ">
                                         <rect key="frame" x="0.0" y="0.0" width="388" height="20.333333333333332"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Вопрос" lineBreakMode="middleTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xxv-rY-1l8" customClass="UILabelTheme" customModule="MovieQuiz" customModuleProvider="target">
@@ -38,12 +38,12 @@
                                             </label>
                                         </subviews>
                                     </stackView>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" verticalCompressionResistancePriority="749" image="Tesla" translatesAutoresizingMaskIntoConstraints="NO" id="2fP-IF-Jbs">
-                                        <rect key="frame" x="0.0" y="40.333333333333314" width="388" height="657.33333333333348"/>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" verticalCompressionResistancePriority="749" image="Background" translatesAutoresizingMaskIntoConstraints="NO" id="2fP-IF-Jbs">
+                                        <rect key="frame" x="0.0" y="40.333333333333314" width="388" height="654.33333333333348"/>
                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </imageView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" text="Question " textAlignment="center" lineBreakMode="headTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FFA-Mx-yNc">
-                                        <rect key="frame" x="0.0" y="717.66666666666663" width="388" height="20.333333333333371"/>
+                                        <rect key="frame" x="0.0" y="714.66666666666663" width="388" height="20.333333333333371"/>
                                         <rect key="contentStretch" x="0.0" y="0.14999999999999999" width="1" height="1"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <color key="textColor" name="default"/>
@@ -51,7 +51,7 @@
                                         <size key="shadowOffset" width="0.0" height="0.0"/>
                                     </label>
                                     <stackView opaque="NO" contentMode="scaleAspectFill" distribution="fillEqually" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="aCb-am-HGv">
-                                        <rect key="frame" x="0.0" y="758" width="388" height="60"/>
+                                        <rect key="frame" x="0.0" y="755" width="388" height="60"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dnn-xf-hRH" customClass="UIButtonTheme" customModule="MovieQuiz" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="0.0" width="184" height="60"/>
@@ -79,17 +79,23 @@
                                     </stackView>
                                 </subviews>
                             </stackView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="ZFX-QN-O2R">
+                                <rect key="frame" x="204" y="453" width="20" height="20"/>
+                            </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemGray6Color"/>
                         <constraints>
-                            <constraint firstItem="fFq-hE-6Yv" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="HUm-0h-Ph9"/>
+                            <constraint firstItem="ZFX-QN-O2R" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="FOJ-J1-aZ5"/>
+                            <constraint firstItem="fFq-hE-6Yv" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="20" id="HUm-0h-Ph9"/>
                             <constraint firstItem="fFq-hE-6Yv" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="10" id="VAH-hO-VEh"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="fFq-hE-6Yv" secondAttribute="bottom" constant="20" id="hdY-hT-1xH"/>
+                            <constraint firstItem="ZFX-QN-O2R" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="l4H-Ye-zH0"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="fFq-hE-6Yv" secondAttribute="trailing" constant="20" id="rGt-cg-JNn"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="activityIndicator" destination="ZFX-QN-O2R" id="mch-75-wXH"/>
                         <outlet property="falseButton" destination="dnn-xf-hRH" id="TWh-KB-L9c"/>
                         <outlet property="quizImageView" destination="2fP-IF-Jbs" id="Bv7-tK-sLf"/>
                         <outlet property="quizQuestionLabel" destination="FFA-Mx-yNc" id="xCG-c4-dfP"/>
@@ -100,11 +106,11 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-55.072463768115945" y="55.580357142857139"/>
+            <point key="canvasLocation" x="-56.074766355140184" y="55.075593952483807"/>
         </scene>
     </scenes>
     <resources>
-        <image name="Tesla" width="1693" height="2500"/>
+        <image name="Background" width="375" height="812"/>
         <namedColor name="default">
             <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
