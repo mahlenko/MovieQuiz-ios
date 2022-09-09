@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21223" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
-    <device id="retina6_7" orientation="portrait" appearance="dark"/>
+    <device id="retina6_0" orientation="portrait" appearance="dark"/>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21204"/>
@@ -15,35 +15,38 @@
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="MovieQuizViewController" customModule="MovieQuiz" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="428" height="926"/>
+                        <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="fFq-hE-6Yv">
-                                <rect key="frame" x="20" y="57" width="388" height="815"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="fFq-hE-6Yv">
+                                <rect key="frame" x="20" y="57" width="350" height="733"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="top" verticalCompressionResistancePriority="749" distribution="fillEqually" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="kCP-00-GcQ">
-                                        <rect key="frame" x="0.0" y="0.0" width="388" height="20.333333333333332"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="350" height="20.333333333333332"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Вопрос" lineBreakMode="middleTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xxv-rY-1l8" customClass="UILabelTheme" customModule="MovieQuiz" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="0.0" width="194" height="20.333333333333332"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="175" height="20.333333333333332"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <color key="textColor" name="default"/>
                                                 <color key="highlightedColor" name="default"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1/10" textAlignment="right" lineBreakMode="middleTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jlz-Sm-pAg" customClass="UILabelTheme" customModule="MovieQuiz" customModuleProvider="target">
-                                                <rect key="frame" x="194" y="0.0" width="194" height="20.333333333333332"/>
+                                                <rect key="frame" x="175" y="0.0" width="175" height="20.333333333333332"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <color key="textColor" name="default"/>
                                                 <color key="highlightedColor" name="default"/>
                                             </label>
                                         </subviews>
                                     </stackView>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" verticalCompressionResistancePriority="749" image="Background" translatesAutoresizingMaskIntoConstraints="NO" id="2fP-IF-Jbs">
-                                        <rect key="frame" x="0.0" y="40.333333333333314" width="388" height="654.33333333333348"/>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" ambiguous="YES" image="Background" translatesAutoresizingMaskIntoConstraints="NO" id="2fP-IF-Jbs">
+                                        <rect key="frame" x="0.0" y="40.333333333333314" width="350" height="572.33333333333348"/>
                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" relation="lessThanOrEqual" secondItem="2fP-IF-Jbs" secondAttribute="height" multiplier="2:3" priority="750" id="bIp-kb-eAA"/>
+                                        </constraints>
                                     </imageView>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" text="Question " textAlignment="center" lineBreakMode="headTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FFA-Mx-yNc">
-                                        <rect key="frame" x="0.0" y="714.66666666666663" width="388" height="20.333333333333371"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" ambiguous="YES" text="Question " textAlignment="center" lineBreakMode="headTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FFA-Mx-yNc">
+                                        <rect key="frame" x="0.0" y="632.66666666666663" width="350" height="20.333333333333371"/>
                                         <rect key="contentStretch" x="0.0" y="0.14999999999999999" width="1" height="1"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <color key="textColor" name="default"/>
@@ -51,10 +54,10 @@
                                         <size key="shadowOffset" width="0.0" height="0.0"/>
                                     </label>
                                     <stackView opaque="NO" contentMode="scaleAspectFill" distribution="fillEqually" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="aCb-am-HGv">
-                                        <rect key="frame" x="0.0" y="755" width="388" height="60"/>
+                                        <rect key="frame" x="0.0" y="673" width="350" height="60"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dnn-xf-hRH" customClass="UIButtonTheme" customModule="MovieQuiz" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="0.0" width="184" height="60"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="165" height="60"/>
                                                 <color key="backgroundColor" name="default"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -64,7 +67,7 @@
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="W6D-E8-qoe" customClass="UIButtonTheme" customModule="MovieQuiz" customModuleProvider="target">
-                                                <rect key="frame" x="204" y="0.0" width="184" height="60"/>
+                                                <rect key="frame" x="185" y="0.0" width="165" height="60"/>
                                                 <color key="backgroundColor" name="default"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="60" id="JZs-uf-kcI"/>
@@ -80,7 +83,7 @@
                                 </subviews>
                             </stackView>
                             <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="ZFX-QN-O2R">
-                                <rect key="frame" x="204" y="453" width="20" height="20"/>
+                                <rect key="frame" x="185" y="412" width="20" height="20"/>
                             </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
