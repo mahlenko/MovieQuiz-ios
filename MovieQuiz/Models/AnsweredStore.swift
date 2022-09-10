@@ -10,8 +10,8 @@ import Foundation
 struct AnsweredStore {
     // MARK: - Properties
 
-    var successful: [QuizQuestion] = []
-    var failed: [QuizQuestion] = []
+    private(set) var successful: [QuizQuestion] = []
+    private(set) var failed: [QuizQuestion] = []
 
     // MARK: - Public methods
 
