@@ -11,9 +11,9 @@ import UIKit
 class ResultAlertPresenter {
     // MARK: - Properties
 
-    let delegate: QuestionFactoryDelegate
+    private weak var delegate: UIViewController?
 
-    init(delegate: QuestionFactoryDelegate) {
+    init(delegate: UIViewController) {
         self.delegate = delegate
     }
 
@@ -27,18 +27,17 @@ class ResultAlertPresenter {
             alertController.addAction(action)
         }
 
-        if let delegate = self.delegate as? UIViewController {
-            DispatchQueue.main.async {
-                delegate.present(alertController, animated: true) {
-                    // поиск слоя с фоном алерта
-                    guard
-                        let window = UIApplication.shared.windows.first,
-                        let overlay = window.subviews.last?.layer.sublayers?.first
-                    else { return }
+        DispatchQueue.main.async {
+            guard let delegate = self.delegate else { return }
+            delegate.present(alertController, animated: true) {
+                // поиск слоя с фоном алерта
+                guard
+                    let window = UIApplication.shared.windows.first,
+                    let overlay = window.subviews.last?.layer.sublayers?.first
+                else { return }
 
-                    // замена цвета фона
-                    self.animateOverlayColorAlert(overlay)
-                }
+                // замена цвета фона
+                self.animateOverlayColorAlert(overlay)
             }
         }
     }

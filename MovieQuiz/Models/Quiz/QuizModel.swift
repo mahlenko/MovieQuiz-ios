@@ -46,7 +46,7 @@ class QuizModel {
             guard let url = URL(string: question.image) else { return }
             imageData = try Data(contentsOf: url)
         } catch {
-            guard let questions = self.questions as? QuestionIMDBFactory else { return }
+            guard let questions = self.questions as? QuestionNetworkFactory else { return }
             DispatchQueue.main.async {
                 questions.delegate.didFailToLoadQuestion(with: error)
             }
@@ -63,7 +63,7 @@ class QuizModel {
 
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
-            guard let questions = self.questions as? QuestionIMDBFactory else { return }
+            guard let questions = self.questions as? QuestionNetworkFactory else { return }
             questions.delegate.didReceiveNextQuestion(question: result)
         }
     }
@@ -78,7 +78,7 @@ class QuizModel {
     }
 
     public func isComplete() -> Bool {
-        return answered.position() == countAnsweredToComplete
+        answered.position() == countAnsweredToComplete
     }
 
     public func percentAccuracy() -> Float {
@@ -87,20 +87,20 @@ class QuizModel {
     }
 
     public func positionText() -> String {
-        return "\(answered.position() + 1) / \(countAnsweredToComplete)"
+        "\(answered.position() + 1) / \(countAnsweredToComplete)"
     }
 
     public func resultText() -> String {
-        return "\(answered.successful.count)/\(countAnsweredToComplete)"
+        "\(answered.successful.count)/\(countAnsweredToComplete)"
     }
 
     public func isWin() -> Bool {
-        return answered.successful.count == countAnsweredToComplete
+        answered.successful.count == countAnsweredToComplete
     }
 
     // MARK: - Private methods
 
     private func checkAnswer(question: QuizQuestion, answer: Bool) -> Bool {
-        return question.correctAnswer == answer
+        question.correctAnswer == answer
     }
 }

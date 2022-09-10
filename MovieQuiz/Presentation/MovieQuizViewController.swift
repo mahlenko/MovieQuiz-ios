@@ -6,7 +6,7 @@ import UIKit
 final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     // MARK: - Properties
 
-    private var movies: QuestionFactoryProtocol?
+    private var questions: QuestionFactoryProtocol?
 
     private var storage: StatisticServiceProtocol = StatisticDefaultService()
 
@@ -46,18 +46,17 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
         alertPresenter = ResultAlertPresenter(delegate: self)
         configuration()
-
         create()
     }
 
     func didLoadDataFromServer() {
         activityIndicatorShowing(show: false)
 
-        guard let movies = movies else { return }
-
-        quiz = QuizModel(questions: movies)
+        guard let questions = questions else { return }
+        quiz = QuizModel(questions: questions)
         next()
     }
 
@@ -75,12 +74,13 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             message: "\(error.localizedDescription)",
             actions: [
                 UIAlertAction(title: "Попробовать еще раз", style: .default) {_ in
-                    self.create()
+                    self.didLoadDataFromServer()
                 }
             ])
     }
 
     func didFailToLoadQuestion(with error: Error) {
+        activityIndicatorShowing(show: false)
         guard let alertPresenter = alertPresenter else { return }
 
         alertPresenter.view(
@@ -97,6 +97,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     func didReceiveNextQuestion(question: QuizStepViewModel?) {
         guard let question = question else { return }
 
+        self.setImageBorderView()
+
         quizImageView.image = question.image
         quizQuestionLabel.text = question.question
         quizStepsLabel.text = question.stepsTextLabel
@@ -109,7 +111,10 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     /// Создать игру/рестарт игры
     private func create() {
         activityIndicatorShowing(show: true)
-        movies = QuestionIMDBFactory(delegate: self)
+
+        questions = QuestionNetworkFactory(client: NetworkClient(), delegate: self)
+        guard let questions = questions as? QuestionNetworkFactory else { return }
+        questions.load()
     }
 
     /// Проверка ответа пользователя
@@ -124,8 +129,6 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
 
         // Go to the next question or wait for results with a delay of 1 second
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            self.setImageBorderView()
-
             quiz.isComplete()
                 ? self.complete(quiz: quiz)
                 : self.next()
@@ -153,7 +156,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         guard let alertPresenter = alertPresenter else { return }
         guard let bestScrore = storage.bestQuiz() else { return }
 
-        let bestScore = "\(bestScrore.current) (\(bestScrore.completedAt.dateTimeString)"
+        let bestScore = "\(bestScrore.current) (\(bestScrore.completedAt.dateTimeString))"
 
         alertPresenter.view(
             title: statistic.avgAccuracy == 100 ? "🎉 Победа!" : "Этот раунд окончен",
@@ -164,7 +167,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
                 "Средняя точность: \(storage.average().rounded(length: 2))%",
             actions: [
                 UIAlertAction(title: "Попробовать еще раз", style: .default) {_ in
-                    self.create()
+                    self.didLoadDataFromServer()
                 }
             ]
         )
