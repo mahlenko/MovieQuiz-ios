@@ -11,4 +11,5 @@ protocol QuestionFactoryDelegate {
     func didReceiveNextQuestion(question: QuizStepViewModel?)
     func didLoadDataFromServer()
     func didFailToLoadData(with error: Error)
+    func didFailToLoadQuestion(with error: Error)
 }

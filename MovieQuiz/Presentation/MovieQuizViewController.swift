@@ -72,10 +72,24 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
 
         alertPresenter.view(
             title: "😔",
-            message: "\(error): \(error.localizedDescription)",
+            message: "\(error.localizedDescription)",
             actions: [
                 UIAlertAction(title: "Попробовать еще раз", style: .default) {_ in
                     self.create()
+                }
+            ])
+    }
+
+    func didFailToLoadQuestion(with error: Error) {
+        guard let alertPresenter = alertPresenter else { return }
+
+        alertPresenter.view(
+            title: "😔",
+            message: "\(error.localizedDescription)",
+            actions: [
+                UIAlertAction(title: "Попробовать еще раз", style: .default) {_ in
+                    guard let quiz = self.quiz else { return }
+                    quiz.showQuestion()
                 }
             ])
     }

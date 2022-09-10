@@ -33,28 +33,38 @@ class QuizModel {
             guard let question = self.questions.requestNextQuestion() else { return }
 
             self.currentQuestion = question
+            self.showQuestion()
+        }
+    }
 
-            var imageData: Data?
+    public func showQuestion() {
+        guard let question = self.currentQuestion else { return }
 
-            do {
-                guard let url = URL(string: question.image) else { return }
-                imageData = try Data(contentsOf: url)
-            } catch {}
+        var imageData: Data?
 
-            guard let imageData = imageData else { return }
-            let image = UIImage(data: imageData) ?? UIImage(named: "Error")
-
-            let result = QuizStepViewModel(
-                image: image,
-                question: question.text,
-                stepsTextLabel: self.positionText())
-
-            DispatchQueue.main.async { [weak self] in
-                guard let self = self else { return }
-                guard let questions = self.questions as? QuestionIMDBFactory else { return }
-
-                questions.delegate.didReceiveNextQuestion(question: result)
+        do {
+            guard let url = URL(string: question.image) else { return }
+            imageData = try Data(contentsOf: url)
+        } catch {
+            guard let questions = self.questions as? QuestionIMDBFactory else { return }
+            DispatchQueue.main.async {
+                questions.delegate.didFailToLoadQuestion(with: error)
             }
+            return
+        }
+
+        guard let imageData = imageData else { return }
+        let image = UIImage(data: imageData) ?? UIImage(named: "Error")
+
+        let result = QuizStepViewModel(
+            image: image,
+            question: question.text,
+            stepsTextLabel: self.positionText())
+
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            guard let questions = self.questions as? QuestionIMDBFactory else { return }
+            questions.delegate.didReceiveNextQuestion(question: result)
         }
     }
 
