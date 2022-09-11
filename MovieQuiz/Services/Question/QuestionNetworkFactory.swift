@@ -1,5 +1,5 @@
 //
-//  QuestionIMDBFactory.swift
+//  QuestionNetworkFactory.swift
 //  MovieQuiz
 //
 //  Created by Sergey on 07.09.2022.
@@ -11,7 +11,7 @@ import UIKit
 final class QuestionNetworkFactory: QuestionFactoryProtocol {
     // MARK: - Properties
 
-    public var delegate: QuestionFactoryDelegate
+    var delegate: QuestionFactoryDelegate
     private let client: NetworkClient
     private let apiKey = "k_5cudelqo"
 

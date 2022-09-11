@@ -46,9 +46,8 @@ class QuizModel {
             guard let url = URL(string: question.image) else { return }
             imageData = try Data(contentsOf: url)
         } catch {
-            guard let questions = self.questions as? QuestionNetworkFactory else { return }
             DispatchQueue.main.async {
-                questions.delegate.didFailToLoadQuestion(with: error)
+                self.questions.delegate.didFailToLoadQuestion(with: error)
             }
             return
         }
@@ -63,8 +62,7 @@ class QuizModel {
 
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
-            guard let questions = self.questions as? QuestionNetworkFactory else { return }
-            questions.delegate.didReceiveNextQuestion(question: result)
+            self.questions.delegate.didReceiveNextQuestion(question: result)
         }
     }
 

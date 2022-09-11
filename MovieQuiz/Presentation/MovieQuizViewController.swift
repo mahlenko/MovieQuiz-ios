@@ -112,9 +112,9 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     private func create() {
         activityIndicatorShowing(show: true)
 
-        questions = QuestionNetworkFactory(client: NetworkClient(), delegate: self)
-        guard let questions = questions as? QuestionNetworkFactory else { return }
-        questions.load()
+        let questionFactory = QuestionNetworkFactory(client: NetworkClient(), delegate: self)
+        questionFactory.load()
+        questions = questionFactory
     }
 
     /// Проверка ответа пользователя
