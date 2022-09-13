@@ -103,6 +103,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         quizQuestionLabel.text = question.question
         quizStepsLabel.text = question.stepsTextLabel
 
+        self.activityIndicatorShowing(show: false)
         enableControls(true)
     }
 
@@ -129,6 +130,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
 
         // Go to the next question or wait for results with a delay of 1 second
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            self.activityIndicatorShowing(show: true)
             quiz.isComplete()
                 ? self.complete(quiz: quiz)
                 : self.next()
