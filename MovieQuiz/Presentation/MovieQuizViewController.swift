@@ -5,8 +5,9 @@ import UIKit
 */
 final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     // MARK: - Properties
+    private var networkClient: NetworkRouting?
 
-    private var questions: QuestionFactoryProtocol?
+    private var questions: QuestionNetworkFactory?
 
     private var storage: StatisticServiceProtocol = StatisticDefaultService()
 
@@ -47,6 +48,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        networkClient = NetworkClient()
         alertPresenter = ResultAlertPresenter(delegate: self)
         configuration()
         create()
@@ -56,7 +58,9 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         activityIndicatorShowing(show: false)
 
         guard let questions = questions else { return }
-        quiz = QuizModel(questions: questions)
+        guard let client = networkClient else { return }
+
+        quiz = QuizModel(client: client, questions: questions)
         next()
     }
 
@@ -64,7 +68,6 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         activityIndicatorShowing(show: false)
 
         guard let alertPresenter = alertPresenter else {
-            print(error)
             print(error.localizedDescription)
             return
         }
@@ -74,7 +77,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             message: "\(error.localizedDescription)",
             actions: [
                 UIAlertAction(title: "Попробовать еще раз", style: .default) {_ in
-                    self.didLoadDataFromServer()
+                    self.create()
                 }
             ])
     }
@@ -89,12 +92,14 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             actions: [
                 UIAlertAction(title: "Попробовать еще раз", style: .default) {_ in
                     guard let quiz = self.quiz else { return }
-                    quiz.showQuestion()
+                    quiz.showQuestion { step in
+                        self.didViewQuestion(question: step)
+                    }
                 }
             ])
     }
 
-    func didReceiveNextQuestion(question: QuizStepViewModel?) {
+    func didViewQuestion(question: QuizStepViewModel?) {
         guard let question = question else { return }
 
         self.setImageBorderView()
@@ -113,9 +118,25 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     private func create() {
         activityIndicatorShowing(show: true)
 
-        let questionFactory = QuestionNetworkFactory(client: NetworkClient(), delegate: self)
-        questionFactory.load()
-        questions = questionFactory
+        // Загрузим список фильмов с вопросами
+        guard let client = self.networkClient else {
+            print("❌ No network client.")
+            return
+        }
+
+        questions = QuestionNetworkFactory(client: client, apiKey: "k_5cudelqo")
+
+        questions?.load { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success:
+                    self.didLoadDataFromServer()
+
+                case .failure(let error):
+                    self.didFailToLoadData(with: error)
+                }
+            }
+        }
     }
 
     /// Проверка ответа пользователя
@@ -139,8 +160,11 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
 
     /// Показать следующий вопрос
     private func next() {
+        activityIndicatorShowing(show: true)
         guard let quiz = quiz else { return }
-        quiz.nextQuestion()
+        quiz.nextQuestion { question in
+            self.didViewQuestion(question: question)
+        }
     }
 
     /// Показать статистику
