@@ -11,15 +11,23 @@ import UIKit
 final class QuestionNetworkFactory: QuestionFactoryProtocol {
     // MARK: - Properties
 
-    var delegate: QuestionFactoryDelegate
-    private let client: NetworkClient
-    private let apiKey = "k_5cudelqo"
+    private let client: NetworkRouting
+    private let apiKey: String
 
     public var data: [QuizQuestion] = []
 
-    init(client: NetworkClient, delegate: QuestionFactoryDelegate) {
-        self.delegate = delegate
+    init(client: NetworkRouting, apiKey: String) {
         self.client = client
+        self.apiKey = apiKey
+    }
+
+    // MARK: - Private methods
+    private var mostPopularMoviesUrl: URL {
+        guard let url = URL(string: "https://imdb-api.com/en/API/MostPopularMovies/\(apiKey)") else {
+            preconditionFailure("Unable to construct mostPopularMoviesUrl")
+        }
+
+        return url
     }
 
     // MARK: - Public methods
@@ -29,48 +37,48 @@ final class QuestionNetworkFactory: QuestionFactoryProtocol {
         return self.data[safe: index]
     }
 
-    public func load() {
-        guard let url = URL(string: "https://imdb-api.com/en/API/MostPopularMovies/\(apiKey)") else { return }
+    func load(handler: @escaping (Result<[QuizQuestion], Error>) -> Void) {
+        client.get(url: mostPopularMoviesUrl) { result in
+            switch result {
+            case .success(let data):
+                do {
+                    let json = try JSONDecoder().decode(MoviesDataResponse.self, from: data)
 
-        self.client.get(url: url) { [weak self] result in
-            guard let self = self else { return }
+                    // Создаем исключение с ошибкой из IMDB API
+                    guard json.errorMessage.isEmpty else {
+                        throw IMDBError.invalidRequstException(json.errorMessage)
+                    }
 
-            DispatchQueue.main.async {
-                switch result {
-                case .failure(let error):
-                    self.delegate.didFailToLoadData(with: error)
-                case .success(let data):
-                    do {
-                        let json = try JSONDecoder().decode(MoviesDataResponse.self, from: data)
+                    // Фильтруем список фильмов, оставляем фильмы с рейтингом.
+                    // (не все фильмы с заполненым с рейтингом)
+                    let responseData = json.items.filter { item in
+                        return !item.imDbRating.isEmpty
+                    }
 
-                        // TODO: Ошибка может быть не по поводу ключа, не знаю как генерить Error с сообщением
-                        guard json.errorMessage.isEmpty else {
-                            self.delegate.didFailToLoadData(with: ImdbError.invalidKey)
+                    // Собираем список вопросов
+                    responseData.forEach { movie in
+                        guard let rating = Float(movie.imDbRating) else {
                             return
                         }
 
                         //
-                        let responseData = json.items.filter { item in
-                            return !item.imDbRating.isEmpty
-                        }
-
-                        responseData.forEach { movie in
-                            let rating = Float(movie.imDbRating) ?? 0.0
-
-                            self.data.append(
-                                QuizQuestion(
-                                    image: movie.image,
-                                    rating: rating,
-                                    text: "Рейтинг \"\(movie.title)\" больше, чем 7?",
-                                    correctAnswer: rating > 7.0)
-                            )
-                        }
-                    } catch {
-                        self.delegate.didFailToLoadData(with: error)
+                        self.data.append(
+                            QuizQuestion(
+                                image: movie.image,
+                                rating: rating,
+                                text: "Рейтинг \"\(movie.title)\" больше, чем 7?",
+                                correctAnswer: rating > 7.0)
+                        )
                     }
 
-                    self.delegate.didLoadDataFromServer()
+                    DispatchQueue.main.async {
+                        handler(.success(self.data))
+                    }
+                } catch {
+                    handler(.failure(error))
                 }
+            case .failure(let error):
+                handler(.failure(error))
             }
         }
     }
