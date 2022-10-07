@@ -17,52 +17,36 @@ class QuizModel {
     var questions: QuestionFactoryProtocol
     var currentQuestion: QuizQuestion?
     let countAnsweredToComplete: Int = 10
+    let networkClient: NetworkRouting
 
-    init(questions: QuestionFactoryProtocol) {
-        self.beginedAt = Date()
+    init(client: NetworkRouting, questions: QuestionFactoryProtocol) {
+        self.networkClient = client
         self.questions = questions
+        self.beginedAt = Date()
         self.counterLabelText = positionText()
         print("🎲 Created a new quiz and shuffled the questions.")
     }
 
     // MARK: - Public methods
 
-    public func nextQuestion() {
-        DispatchQueue.global().async { [weak self] in
-            guard let self = self else { return }
-            guard let question = self.questions.requestNextQuestion() else { return }
+    public func nextQuestion(handle: @escaping (QuizStepViewModel) -> Void) {
+        guard let question = self.questions.requestNextQuestion() else { return }
 
-            self.currentQuestion = question
-            self.showQuestion()
-        }
+        self.currentQuestion = question
+        self.showQuestion(handle: handle)
     }
 
-    public func showQuestion() {
+    public func showQuestion(handle: @escaping (QuizStepViewModel) -> Void) {
         guard let question = self.currentQuestion else { return }
 
-        var imageData: Data?
-
-        do {
-            guard let url = URL(string: question.image) else { return }
-            imageData = try Data(contentsOf: url)
-        } catch {
+        self.image(imageUrl: question.image) { image in
             DispatchQueue.main.async {
-                self.questions.delegate.didFailToLoadQuestion(with: error)
+                handle(QuizStepViewModel(
+                    image: image,
+                    question: question.text,
+                    stepsTextLabel: self.positionText())
+                )
             }
-            return
-        }
-
-        guard let imageData = imageData else { return }
-        let image = UIImage(data: imageData) ?? UIImage(named: "Error")
-
-        let result = QuizStepViewModel(
-            image: image,
-            question: question.text,
-            stepsTextLabel: self.positionText())
-
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-            self.questions.delegate.didReceiveNextQuestion(question: result)
         }
     }
 
@@ -97,6 +81,33 @@ class QuizModel {
     }
 
     // MARK: - Private methods
+
+    private func image(imageUrl: String, handle: @escaping (UIImage) -> Void) {
+        guard let placeholder = defaultImage() else {
+            return
+        }
+
+        guard let url = URL(string: imageUrl) else {
+            return handle(placeholder)
+        }
+
+        self.networkClient.get(url: url) { result in
+            switch result {
+            case.success(let image):
+                guard let image = UIImage(data: image) else {
+                    return handle(placeholder)
+                }
+
+                handle(image)
+            case .failure:
+                handle(placeholder)
+            }
+        }
+    }
+
+    private func defaultImage() -> UIImage? {
+        return UIImage(named: "Error")
+    }
 
     private func checkAnswer(question: QuizQuestion, answer: Bool) -> Bool {
         question.correctAnswer == answer
