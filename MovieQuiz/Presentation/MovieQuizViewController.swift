@@ -7,7 +7,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     // MARK: - Properties
     private var networkClient: NetworkRouting?
 
-    private var questions: QuestionNetworkFactory?
+    private var questions: QuestionFactoryProtocol?
 
     private var storage: StatisticServiceProtocol = StatisticDefaultService()
 
@@ -124,9 +124,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             return
         }
 
-        questions = QuestionNetworkFactory(client: client, apiKey: "k_5cudelqo")
-
-        questions?.load { result in
+        let questions = QuestionNetworkFactory(client: client, apiKey: "k_5cudelqo")
+        questions.load { result in
             DispatchQueue.main.async {
                 switch result {
                 case .success:
@@ -137,6 +136,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
                 }
             }
         }
+
+        self.questions = questions
     }
 
     /// Проверка ответа пользователя
