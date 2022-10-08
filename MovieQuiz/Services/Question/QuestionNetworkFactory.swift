@@ -33,8 +33,7 @@ final class QuestionNetworkFactory: QuestionFactoryProtocol {
     // MARK: - Public methods
 
     func requestNextQuestion() -> QuizQuestion? {
-        let index = (0..<items.count).randomElement() ?? 0
-        return items[safe: index]
+        return items.randomElement()
     }
 
     func load(handler: @escaping (Result<MoviesDataResponse, Error>) -> Void) {
