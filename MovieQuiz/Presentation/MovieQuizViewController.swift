@@ -124,11 +124,12 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             return
         }
 
-        let questions = QuestionNetworkFactory(client: client, apiKey: "k_5cudelqo")
+        let questions = QuestionNetworkFactory(apiKey: "k_5cudelqo", client: client)
         questions.load { result in
             DispatchQueue.main.async {
                 switch result {
-                case .success:
+                case .success(let movies):
+                    questions.items = MovieToQuizQuestionConverter().handle(response: movies)
                     self.didLoadDataFromServer()
 
                 case .failure(let error):

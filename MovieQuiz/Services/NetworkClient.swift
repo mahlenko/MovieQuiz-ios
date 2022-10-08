@@ -7,10 +7,6 @@
 
 import Foundation
 
-protocol NetworkRouting {
-    func get(url: URL, handler: @escaping (Result<Data, Error>) -> Void)
-}
-
 class NetworkClient: NetworkRouting {
     // MARK: - Public methods
 
