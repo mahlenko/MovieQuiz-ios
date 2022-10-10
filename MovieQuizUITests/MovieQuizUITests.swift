@@ -23,7 +23,7 @@ final class MovieQuizUITests: XCTestCase {
         app = nil
     }
 
-    func waitFor() {
+    func waitHiddenActivityIndicator() {
         wait(
             for: [
                 expectation(
@@ -40,7 +40,7 @@ final class MovieQuizUITests: XCTestCase {
 
         app.buttons["yes"].tap()
 
-        waitFor()
+        waitHiddenActivityIndicator()
 
         let indexLabel = app.staticTexts["index"]
         let secondPoster = app.images["poster"]
@@ -54,7 +54,7 @@ final class MovieQuizUITests: XCTestCase {
 
         app.buttons["no"].tap()
 
-        waitFor()
+        waitHiddenActivityIndicator()
 
         let indexLabel = app.staticTexts["index"]
         let secondPoster = app.images["poster"]
@@ -69,7 +69,7 @@ final class MovieQuizUITests: XCTestCase {
         // When
         for _ in 0..<10 {
             app.buttons["no"].tap()
-            waitFor()
+            waitHiddenActivityIndicator()
         }
 
         let indexLabel = app.staticTexts["index"]
@@ -80,10 +80,10 @@ final class MovieQuizUITests: XCTestCase {
         let alertBtn = alert.buttons.firstMatch
 
         XCTAssertTrue(alert.label == "🎉 Победа!" || alert.label == "Этот раунд окончен")
-        XCTAssertTrue(alertBtn.label == "Попробовать еще раз")
+        XCTAssertTrue(alertBtn.label == "Сыграть еще раз" || alertBtn.label == "Попробовать еще раз")
 
         alertBtn.tap()
-        waitFor()
+        waitHiddenActivityIndicator()
 
         XCTAssertTrue(indexLabel.label == "1 / 10")
     }
