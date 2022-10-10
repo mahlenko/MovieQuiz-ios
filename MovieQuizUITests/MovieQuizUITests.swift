@@ -7,8 +7,8 @@
 
 import XCTest
 
+// swiftlint:disable overridden_super_call implicitly_unwrapped_optional
 final class MovieQuizUITests: XCTestCase {
-
     var app: XCUIApplication!
 
     override func setUpWithError() throws {
@@ -65,13 +65,10 @@ final class MovieQuizUITests: XCTestCase {
 
     func testCompleteAndReload() {
         // Given
-        let question_count = 10
-
-        let buttons: [XCUIElement] = [ app.buttons["no"], app.buttons["yes"] ]
 
         // When
-        for _ in 0..<question_count {
-            buttons.randomElement()!.tap()
+        for _ in 0..<10 {
+            app.buttons["no"].tap()
             waitFor()
         }
 
@@ -90,5 +87,5 @@ final class MovieQuizUITests: XCTestCase {
 
         XCTAssertTrue(indexLabel.label == "1 / 10")
     }
-    
 }
+// swiftlint:enable overridden_super_call implicitly_unwrapped_optional

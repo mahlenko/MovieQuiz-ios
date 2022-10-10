@@ -12,7 +12,7 @@ final class NetworkClientTest: XCTestCase {
     // MARK: - Tests
 
     func testSuccessLoading() throws {
-        let loader = QuestionNetworkFactory(apiKey: "", client: StubNetworkClient(emulateError: false))
+        let loader = QuestionFactory(client: StubNetworkClient(emulateError: false))
 
         let expectation = expectation(description: "Loading expectation")
 
@@ -20,10 +20,10 @@ final class NetworkClientTest: XCTestCase {
             switch result {
             case .success(let movies):
                 // сравниваем данные с тем, что мы предполагали
-                XCTAssertEqual(movies.items.count, 2)
+                XCTAssertEqual(movies.count, 2)
                 expectation.fulfill()
             case .failure:
-                // мы не ожидаем, что пришла ошибка; если она появится, надо будет провалить тест
+                // проваливаем тест, в случае ошибки
                 expectation.fulfill()
                 XCTFail("Unexpected failure")
             }
@@ -33,7 +33,7 @@ final class NetworkClientTest: XCTestCase {
     }
 
     func testFailureLoading() throws {
-        let loader = QuestionNetworkFactory(apiKey: "", client: StubNetworkClient(emulateError: true))
+        let loader = QuestionFactory(client: StubNetworkClient(emulateError: true))
 
         let expectation = expectation(description: "Loading expectation")
 

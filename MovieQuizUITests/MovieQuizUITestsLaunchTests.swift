@@ -7,8 +7,8 @@
 
 import XCTest
 
+// swiftlint:disable overridden_super_call
 final class MovieQuizUITestsLaunchTests: XCTestCase {
-
     override class var runsForEachTargetApplicationUIConfiguration: Bool {
         true
     }
@@ -30,3 +30,4 @@ final class MovieQuizUITestsLaunchTests: XCTestCase {
         add(attachment)
     }
 }
+// swiftlint:enable overridden_super_call

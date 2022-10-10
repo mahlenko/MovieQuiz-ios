@@ -3,17 +3,14 @@ import UIKit
 /**
     View controller Movie Quiz App
 */
-final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
+class MovieQuizViewController: UIViewController, QuestionDelegate {
     // MARK: - Properties
-    private var networkClient: NetworkRouting?
 
-    private var questions: QuestionFactoryProtocol?
+    private var alertPresenter: AlertPresenter?
 
-    private var storage: StatisticServiceProtocol = StatisticDefaultService()
+    private var statisticStore: StatisticServiceProtocol?
 
-    private var alertPresenter: ResultAlertPresenter?
-
-    private var quiz: QuizModel?
+    private let presenter = MovieQuizPresenter()
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
@@ -25,22 +22,22 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
 
     // MARK: - Outlets
 
-    @IBOutlet private var viewContainer: UIView!
-    @IBOutlet private weak var quizStepsLabel: UILabelTheme!
-    @IBOutlet private weak var quizImageView: UIImageView!
-    @IBOutlet private weak var quizQuestionLabel: UILabel!
-    @IBOutlet private weak var falseButton: UIButtonTheme!
-    @IBOutlet private weak var trueButton: UIButtonTheme!
-    @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet internal var viewContainer: UIView!
+    @IBOutlet internal weak var quizStepsLabel: UILabelTheme!
+    @IBOutlet internal weak var quizImageView: UIImageView!
+    @IBOutlet internal weak var quizQuestionLabel: UILabel!
+    @IBOutlet internal weak var falseButton: UIButtonTheme!
+    @IBOutlet internal weak var trueButton: UIButtonTheme!
+    @IBOutlet internal weak var activityIndicator: UIActivityIndicatorView!
 
     // MARK: - Actions
 
     @IBAction private func falseButtonClicked(_ sender: Any) {
-        check(answer: false)
+        presenter.checkAnswer(answer: false)
     }
 
     @IBAction private func trueButtonClicked(_ sender: Any) {
-        check(answer: true)
+        presenter.checkAnswer(answer: true)
     }
 
     // MARK: - Lifecycle
@@ -48,24 +45,24 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        networkClient = NetworkClient()
-        alertPresenter = ResultAlertPresenter(delegate: self)
         configuration()
-        create()
+
+        alertPresenter = AlertPresenter(delegate: self)
+        statisticStore = StatisticDefaultService()
+
+        presenter.viewController = self
+        presenter.loadMovies()
     }
 
+    /// Загрузка вопросов прошла
     func didLoadDataFromServer() {
-        activityIndicatorShowing(show: false)
-
-        guard let questions = questions else { return }
-        guard let client = networkClient else { return }
-
-        quiz = QuizModel(client: client, questions: questions)
-        next()
+        presenter.loadingState(false)
+        print("Фильмы успешно загружены.")
     }
 
+    /// Ошибка при загрузки вопросов с сервера
     func didFailToLoadData(with error: Error) {
-        activityIndicatorShowing(show: false)
+        print("Произошла ошибка загрузки фильмов: \(error.localizedDescription).")
 
         guard let alertPresenter = alertPresenter else {
             print(error.localizedDescription)
@@ -77,125 +74,64 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             message: "\(error.localizedDescription)",
             actions: [
                 UIAlertAction(title: "Попробовать еще раз", style: .default) {_ in
-                    self.create()
+                    self.presenter.loadMovies()
                 }
             ])
     }
 
+    /// Ошибка при загрузки вопроса (например, неудачная загрузка фото)
     func didFailToLoadQuestion(with error: Error) {
-        activityIndicatorShowing(show: false)
-        guard let alertPresenter = alertPresenter else { return }
+        print("Произошла ошибка загрузки вопроса: \(error.localizedDescription)")
+
+        guard let alertPresenter = self.alertPresenter else {
+            return
+        }
 
         alertPresenter.view(
             title: "😔",
             message: "\(error.localizedDescription)",
             actions: [
                 UIAlertAction(title: "Попробовать еще раз", style: .default) {_ in
-                    guard let quiz = self.quiz else { return }
-                    quiz.showQuestion { step in
-                        self.didViewQuestion(question: step)
-                    }
+                    // попробовать показать вопрос еще раз
+                    self.presenter.show()
                 }
             ])
     }
 
-    func didViewQuestion(question: QuizStepViewModel?) {
-        guard let question = question else { return }
-
-        self.setImageBorderView()
-
+    /// Показываем вопрос
+    func didViewQuestion(question: QuestionViewModel) {
         quizImageView.image = question.image
         quizQuestionLabel.text = question.question
         quizStepsLabel.text = question.stepsTextLabel
 
-        self.activityIndicatorShowing(show: false)
-        enableControls(true)
+        print("Вопрос показан на экран пользователя.")
     }
 
-    // MARK: - Private methods
+    /// Показываем сообщение со статистикой по завершению квиза
+    func didCompleteQuiz(currenctQuizStatistic: StatisticQuizViewModel) {
+        guard let statisticStore = statisticStore else { return }
 
-    /// Создать игру/рестарт игры
-    private func create() {
-        activityIndicatorShowing(show: true)
+        // сохраним квиз в общую статистику
+        statisticStore.store(statistic: currenctQuizStatistic)
 
-        // Загрузим список фильмов с вопросами
-        guard let client = self.networkClient else {
-            print("❌ No network client.")
-            return
+        var bestQuizScore = "---"
+        let totalQuizes = statisticStore.all().count
+        if let bestQuiz = statisticStore.bestQuiz() {
+            bestQuizScore = "\(bestQuiz.current) (\(bestQuiz.completedAt.dateTimeString))"
         }
 
-        let questions = QuestionNetworkFactory(apiKey: "k_5cudelqo", client: client)
-        questions.load { result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let movies):
-                    questions.items = MovieToQuizQuestionConverter().handle(response: movies)
-                    self.didLoadDataFromServer()
+        let isWinner = currenctQuizStatistic.avgAccuracy == 100
 
-                case .failure(let error):
-                    self.didFailToLoadData(with: error)
-                }
-            }
-        }
-
-        self.questions = questions
-    }
-
-    /// Проверка ответа пользователя
-    private func check(answer: Bool) {
-        guard let quiz = quiz else { return }
-
-        enableControls(false)
-
-        if let isCorrectResult = quiz.checkAnswer(answer: answer) {
-            isCorrectResult ? successImageView() : failedImageView()
-        }
-
-        // Go to the next question or wait for results with a delay of 1 second
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            self.activityIndicatorShowing(show: true)
-            quiz.isComplete()
-                ? self.complete(quiz: quiz)
-                : self.next()
-        }
-    }
-
-    /// Показать следующий вопрос
-    private func next() {
-        activityIndicatorShowing(show: true)
-        guard let quiz = quiz else { return }
-        quiz.nextQuestion { question in
-            self.didViewQuestion(question: question)
-        }
-    }
-
-    /// Показать статистику
-    private func complete(quiz: QuizModel) {
-        let statistic = StatisticViewModel(
-            current: quiz.resultText(),
-            avgAccuracy: quiz.percentAccuracy(),
-            completedAt: Date()
-        )
-
-        storage.store(statistic: statistic)
-
-        // показать алерт с информацией о результатах
-
-        guard let alertPresenter = alertPresenter else { return }
-        guard let bestScrore = storage.bestQuiz() else { return }
-
-        let bestScore = "\(bestScrore.current) (\(bestScrore.completedAt.dateTimeString))"
-
-        alertPresenter.view(
-            title: statistic.avgAccuracy == 100 ? "🎉 Победа!" : "Этот раунд окончен",
+        alertPresenter?.view(
+            title: isWinner ? "🎉 Победа!" : "Этот раунд окончен",
             message:
-                "Ваш результат: \(statistic.current)\n" +
-                "Количество сыграных квизов: \(storage.all().count)\n" +
-                "Рекорд: \(bestScore)\n" +
-                "Средняя точность: \(storage.average().rounded(length: 2))%",
+                "Ваш результат: \(currenctQuizStatistic.current)\n" +
+                "Количество сыграных квизов: \(totalQuizes)\n" +
+                "Рекорд: \(bestQuizScore)\n" +
+                "Средняя точность: \(statisticStore.average().rounded(length: 2))%",
             actions: [
-                UIAlertAction(title: "Попробовать еще раз", style: .default) {_ in
-                    self.didLoadDataFromServer()
+                UIAlertAction(title: isWinner ? "Сыграть еще раз" : "Попробовать еще раз", style: .default) {_ in
+                    self.presenter.restartQuiz()
                 }
             ]
         )
@@ -203,46 +139,22 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
 
     // MARK: - Helpers
 
-    /// Показать/спрятать лоадер
-    private func activityIndicatorShowing(show: Bool) {
-        activityIndicator.isHidden = !show
-        show
-            ? activityIndicator.startAnimating()
-            : activityIndicator.stopAnimating()
-    }
-
-    private func successImageView() {
-        setImageBorderView(UIColor.success)
-        print("🎉 The answer is correct")
-    }
-
-    private func failedImageView() {
-        setImageBorderView(UIColor.fail)
-        print("😔 The answer is NOT correct")
-    }
-
-    private func setImageBorderView(_ color: UIColor? = .none) {
-        quizImageView.layer.borderColor = color?.cgColor
-        quizImageView.layer.borderWidth = color == .none ? .nan : 8.0
-    }
-
-    private func enableControls(_ enable: Bool) {
-        [trueButton, falseButton].forEach { $0?.isEnabled = enable }
-    }
-
     private func configuration() {
         viewContainer.backgroundColor = UIColor.background
+
         quizImageView.layer.cornerRadius = 20
         quizImageView.image = UIImage(named: "Background")
-        quizQuestionLabel.font = UIFont(name: ThemeFonts.family.bold, size: ThemeFonts.size.large)
+        quizImageView.backgroundColor = UIColor.backgroundImage
+
         quizQuestionLabel.text = ""
+        quizQuestionLabel.font = UIFont(
+            name: ThemeFonts.family.bold,
+            size: ThemeFonts.size.large)
 
         activityIndicator.color = UIColor.accent
         activityIndicator.backgroundColor = UIColor.background
         activityIndicator.layer.cornerRadius = 10
         activityIndicator.isHidden = true
-
-        enableControls(false)
 
         print("✅ Configured storyboard")
     }
