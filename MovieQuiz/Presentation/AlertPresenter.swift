@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class ResultAlertPresenter {
+class AlertPresenter {
     // MARK: - Properties
 
     private weak var delegate: UIViewController?

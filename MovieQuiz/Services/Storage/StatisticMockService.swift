@@ -10,15 +10,15 @@ import Foundation
 final class StatisticMockService: StatisticServiceProtocol {
     // MARK: - Params
 
-    private var data: [StatisticViewModel] = []
+    private var data: [StatisticQuizViewModel] = []
 
     // MARK: - Public methods
 
-    func all() -> [StatisticViewModel] {
+    func all() -> [StatisticQuizViewModel] {
         return data
     }
 
-    func store(statistic: StatisticViewModel) {
+    func store(statistic: StatisticQuizViewModel) {
         data.append(statistic)
     }
 
@@ -36,7 +36,7 @@ final class StatisticMockService: StatisticServiceProtocol {
         self.data = []
     }
 
-    func bestQuiz() -> StatisticViewModel? {
+    func bestQuiz() -> StatisticQuizViewModel? {
         guard var bestScore = all().first else { return nil }
 
         for score in all() where score.avgAccuracy >= bestScore.avgAccuracy {

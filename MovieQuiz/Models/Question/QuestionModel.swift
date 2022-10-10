@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct QuizQuestion {
+struct QuestionModel {
     let image: String
     let rating: Float
     let text: String
