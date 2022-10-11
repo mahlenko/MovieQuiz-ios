@@ -10,7 +10,7 @@ class MovieQuizViewController: UIViewController, QuestionDelegate {
 
     private var statisticStore: StatisticServiceProtocol?
 
-    private let presenter = MovieQuizPresenter()
+    private var presenter: MovieQuizPresenter!
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
@@ -22,22 +22,22 @@ class MovieQuizViewController: UIViewController, QuestionDelegate {
 
     // MARK: - Outlets
 
-    @IBOutlet internal var viewContainer: UIView!
-    @IBOutlet internal weak var quizStepsLabel: UILabelTheme!
-    @IBOutlet internal weak var quizImageView: UIImageView!
-    @IBOutlet internal weak var quizQuestionLabel: UILabel!
-    @IBOutlet internal weak var falseButton: UIButtonTheme!
-    @IBOutlet internal weak var trueButton: UIButtonTheme!
-    @IBOutlet internal weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet private var viewContainer: UIView!
+    @IBOutlet private weak var quizStepsLabel: UILabelTheme!
+    @IBOutlet private weak var quizImageView: UIImageView!
+    @IBOutlet private weak var quizQuestionLabel: UILabel!
+    @IBOutlet private weak var falseButton: UIButtonTheme!
+    @IBOutlet private weak var trueButton: UIButtonTheme!
+    @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
 
     // MARK: - Actions
 
     @IBAction private func falseButtonClicked(_ sender: Any) {
-        presenter.checkAnswer(answer: false)
+        checkAnswer(answer: false)
     }
 
     @IBAction private func trueButtonClicked(_ sender: Any) {
-        presenter.checkAnswer(answer: true)
+        checkAnswer(answer: true)
     }
 
     // MARK: - Lifecycle
@@ -50,13 +50,16 @@ class MovieQuizViewController: UIViewController, QuestionDelegate {
         alertPresenter = AlertPresenter(delegate: self)
         statisticStore = StatisticDefaultService()
 
+        let networkClient = NetworkClient()
+        networkClient.activityIndicator = ActivityIndicator(activityIndicatorView: activityIndicator)
+
+        presenter = MovieQuizPresenter(network: networkClient)
         presenter.viewController = self
         presenter.loadMovies()
     }
 
     /// Загрузка вопросов прошла
     func didLoadDataFromServer() {
-        presenter.loadingState(false)
         print("Фильмы успешно загружены.")
     }
 
@@ -73,7 +76,11 @@ class MovieQuizViewController: UIViewController, QuestionDelegate {
             title: "😔",
             message: "\(error.localizedDescription)",
             actions: [
-                UIAlertAction(title: "Попробовать еще раз", style: .default) {_ in
+                UIAlertAction(title: "Попробовать еще раз", style: .default) {[weak self] _ in
+                    guard let self = self else {
+                        return
+                    }
+
                     self.presenter.loadMovies()
                 }
             ])
@@ -91,7 +98,11 @@ class MovieQuizViewController: UIViewController, QuestionDelegate {
             title: "😔",
             message: "\(error.localizedDescription)",
             actions: [
-                UIAlertAction(title: "Попробовать еще раз", style: .default) {_ in
+                UIAlertAction(title: "Попробовать еще раз", style: .default) {[weak self] _ in
+                    guard let self = self else {
+                        return
+                    }
+
                     // попробовать показать вопрос еще раз
                     self.presenter.show()
                 }
@@ -103,6 +114,8 @@ class MovieQuizViewController: UIViewController, QuestionDelegate {
         quizImageView.image = question.image
         quizQuestionLabel.text = question.question
         quizStepsLabel.text = question.stepsTextLabel
+
+        resultDefaultView()
 
         print("Вопрос показан на экран пользователя.")
     }
@@ -130,14 +143,61 @@ class MovieQuizViewController: UIViewController, QuestionDelegate {
                 "Рекорд: \(bestQuizScore)\n" +
                 "Средняя точность: \(statisticStore.average().rounded(length: 2))%",
             actions: [
-                UIAlertAction(title: isWinner ? "Сыграть еще раз" : "Попробовать еще раз", style: .default) {_ in
-                    self.presenter.restartQuiz()
+                UIAlertAction(
+                    title: isWinner ? "Сыграть еще раз" : "Попробовать еще раз",
+                    style: .default) {[weak self] _ in
+                        guard let self = self else {
+                            return
+                        }
+
+                        self.presenter.restartQuiz()
                 }
             ]
         )
     }
 
+    // MARK: - Private methods
+
+    private func checkAnswer(answer: Bool) {
+        buttonsEnabled(false)
+
+        presenter?.checkAnswer(answer: answer) { result in
+            if result {
+                resultSuccessView()
+            } else {
+                resultFailureView()
+            }
+        }
+    }
     // MARK: - Helpers
+
+    private func buttonsEnabled(_ enabled: Bool) {
+        let buttons = [trueButton, falseButton]
+        buttons.forEach { $0?.isEnabled = enabled }
+    }
+
+    private func resultSuccessView() {
+        setImageBorderView(UIColor.success)
+        print("🎉 The answer is correct")
+    }
+
+    private func resultFailureView() {
+        setImageBorderView(UIColor.fail)
+        print("😔 The answer is NOT correct")
+    }
+
+    private func resultDefaultView() {
+        quizImageView.layer.borderColor = .none
+        quizImageView.layer.borderWidth = .nan
+
+        buttonsEnabled(true)
+    }
+
+    private func setImageBorderView(_ color: UIColor) {
+        quizImageView.layer.borderColor = color.cgColor
+        quizImageView.layer.borderWidth = 8.0
+    }
+
 
     private func configuration() {
         viewContainer.backgroundColor = UIColor.background

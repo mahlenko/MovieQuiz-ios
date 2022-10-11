@@ -11,7 +11,7 @@ import UIKit
 final class MovieQuizPresenter {
     // MARK: - Properties
 
-    private var network: NetworkRouting = NetworkClient()
+    private var network: NetworkRouting
     private var questionFactory: QuestionFactoryProtocol
     private var questionCurrent: QuestionModel?
     private var storage: StatisticServiceProtocol = StatisticDefaultService()
@@ -23,18 +23,21 @@ final class MovieQuizPresenter {
 
     // MARK: - Lifecicle
 
-    init() {
+    init(network: NetworkRouting) {
+        self.network = network
         questionFactory = QuestionFactory(client: self.network)
     }
 
     // MARK: - Logic methods
 
     func loadMovies() {
-        loadingState(true)
-
         guard let questionFactory = questionFactory as? QuestionFactory else { return }
 
-        questionFactory.load { result in
+        questionFactory.load { [weak self] result in
+            guard let self = self else {
+                return
+            }
+
             DispatchQueue.main.async {
                 switch result {
                 case .success:
@@ -53,16 +56,15 @@ final class MovieQuizPresenter {
 
     /// Покажем текущий вопрос
     func show() {
-        loadingState(true)
-        setImageBorderView()
-
         guard let questionCurrent = questionCurrent else { return }
 
         // Загрузим изображение для вопроса
-        Download(network: network).image(url: questionCurrent.image) { result in
-            DispatchQueue.main.async {
-                self.loadingState(false)
+        Download(network: network).image(url: questionCurrent.image) { [weak self] result in
+            guard let self = self else {
+                return
+            }
 
+            DispatchQueue.main.async {
                 let questionImage: UIImage
 
                 switch result {
@@ -88,23 +90,19 @@ final class MovieQuizPresenter {
         }
     }
 
-    func checkAnswer(answer: Bool) {
-        buttonsEnabled(false)
-
+    func checkAnswer(answer: Bool, handle: (Bool) -> Void) {
         let result = questionCurrent?.correctAnswer == answer
-
-        // покажем результат ответа цветом постера
-        if result {
-            resultSuccessView()
-        } else {
-            resultFailureView()
-        }
+        handle(result)
 
         guard let questionCurrent = questionCurrent else { return }
 
         statisticQuiz.store(question: questionCurrent, result: result)
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+            guard let self = self else {
+                return
+            }
+
             if self.statisticQuiz.position() >= self.totalQuestionsQuiz {
                 self.completeQuiz()
             } else {
@@ -129,37 +127,5 @@ final class MovieQuizPresenter {
 
         setNextQuestion()
         show()
-    }
-
-    /// Показать/спрятать лоадер
-    func loadingState(_ show: Bool) {
-        buttonsEnabled(!show)
-
-        viewController?.activityIndicator.isHidden = !show
-        viewController?.activityIndicator.startAnimating()
-    }
-
-    private func buttonsEnabled(_ enabled: Bool) {
-        let buttons = [
-            viewController?.trueButton,
-            viewController?.falseButton
-        ]
-
-        buttons.forEach { $0?.isEnabled = enabled }
-    }
-
-    private func resultSuccessView() {
-        setImageBorderView(UIColor.success)
-        print("🎉 The answer is correct")
-    }
-
-    private func resultFailureView() {
-        setImageBorderView(UIColor.fail)
-        print("😔 The answer is NOT correct")
-    }
-
-    private func setImageBorderView(_ color: UIColor? = .none) {
-        viewController?.quizImageView.layer.borderColor = color?.cgColor
-        viewController?.quizImageView.layer.borderWidth = color == .none ? .nan : 8.0
     }
 }

@@ -63,7 +63,7 @@ final class MovieQuizUITests: XCTestCase {
         XCTAssertFalse(firstPoster == secondPoster)
     }
 
-    func testCompleteAndReload() {
+    func testCompleteQuiz() {
         // Given
 
         // When
@@ -81,11 +81,20 @@ final class MovieQuizUITests: XCTestCase {
 
         XCTAssertTrue(alert.label == "🎉 Победа!" || alert.label == "Этот раунд окончен")
         XCTAssertTrue(alertBtn.label == "Сыграть еще раз" || alertBtn.label == "Попробовать еще раз")
+    }
+
+    func testRestartQuiz() {
+        for _ in 0..<10 {
+            app.buttons["no"].tap()
+            waitHiddenActivityIndicator()
+        }
+
+        let alertBtn = app.alerts.firstMatch.buttons.firstMatch
 
         alertBtn.tap()
         waitHiddenActivityIndicator()
 
-        XCTAssertTrue(indexLabel.label == "1 / 10")
+        XCTAssertTrue(app.staticTexts["index"].label == "1 / 10")
     }
 }
 // swiftlint:enable overridden_super_call implicitly_unwrapped_optional

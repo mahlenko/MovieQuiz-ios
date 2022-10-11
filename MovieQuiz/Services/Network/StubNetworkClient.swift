@@ -8,6 +8,8 @@
 import Foundation
 
 class StubNetworkClient: NetworkRouting {
+    var activityIndicator: ActivityIndicatorProtocol?
+
     // MARK: - Properties
 
     enum TestError: Error { // тестовая ошибка

@@ -40,7 +40,11 @@ final class QuestionFactory: QuestionFactoryProtocol {
     }
 
     func load(handler: @escaping (Result<[MovieModel], Error>) -> Void) {
-        networkClient.get(url: mostPopularMoviesUrl) { result in
+        networkClient.get(url: mostPopularMoviesUrl) { [weak self] result in
+            guard let self = self else {
+                return
+            }
+
             switch result {
             case .success(let data):
                 do {
