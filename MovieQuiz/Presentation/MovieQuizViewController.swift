@@ -50,10 +50,9 @@ class MovieQuizViewController: UIViewController, QuestionDelegate {
         alertPresenter = AlertPresenter(delegate: self)
         statisticStore = StatisticDefaultService()
 
-        let networkClient = NetworkClient()
-        networkClient.activityIndicator = ActivityIndicator(activityIndicatorView: activityIndicator)
+        let indicator = ActivityIndicator(activityIndicatorView: activityIndicator)
+        presenter = MovieQuizPresenter(activityIndicator: indicator)
 
-        presenter = MovieQuizPresenter(network: networkClient)
         presenter.viewController = self
         presenter.loadMovies()
     }
@@ -76,7 +75,7 @@ class MovieQuizViewController: UIViewController, QuestionDelegate {
             title: "😔",
             message: "\(error.localizedDescription)",
             actions: [
-                UIAlertAction(title: "Попробовать еще раз", style: .default) {[weak self] _ in
+                UIAlertAction(title: "Попробовать еще раз", style: .default) { [weak self] _ in
                     guard let self = self else {
                         return
                     }
@@ -98,7 +97,7 @@ class MovieQuizViewController: UIViewController, QuestionDelegate {
             title: "😔",
             message: "\(error.localizedDescription)",
             actions: [
-                UIAlertAction(title: "Попробовать еще раз", style: .default) {[weak self] _ in
+                UIAlertAction(title: "Попробовать еще раз", style: .default) { [weak self] _ in
                     guard let self = self else {
                         return
                     }

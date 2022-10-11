@@ -16,6 +16,7 @@ final class MovieQuizPresenter {
     private var questionCurrent: QuestionModel?
     private var storage: StatisticServiceProtocol = StatisticDefaultService()
     private var statisticQuiz = StatisticQuizModel()
+    private var activityIndicator: ActivityIndicatorProtocol?
 
     private let totalQuestionsQuiz = 10
 
@@ -23,8 +24,9 @@ final class MovieQuizPresenter {
 
     // MARK: - Lifecicle
 
-    init(network: NetworkRouting) {
-        self.network = network
+    init(activityIndicator: ActivityIndicatorProtocol) {
+        self.network = NetworkClient()
+        self.activityIndicator = activityIndicator
         questionFactory = QuestionFactory(client: self.network)
     }
 
@@ -33,12 +35,16 @@ final class MovieQuizPresenter {
     func loadMovies() {
         guard let questionFactory = questionFactory as? QuestionFactory else { return }
 
+        activityIndicator?.show()
+
         questionFactory.load { [weak self] result in
             guard let self = self else {
                 return
             }
 
             DispatchQueue.main.async {
+                self.activityIndicator?.hide()
+
                 switch result {
                 case .success:
                     self.setNextQuestion()
@@ -57,6 +63,8 @@ final class MovieQuizPresenter {
     /// Покажем текущий вопрос
     func show() {
         guard let questionCurrent = questionCurrent else { return }
+
+        activityIndicator?.show()
 
         // Загрузим изображение для вопроса
         Download(network: network).image(url: questionCurrent.image) { [weak self] result in
@@ -86,12 +94,15 @@ final class MovieQuizPresenter {
                     image: questionImage,
                     question: questionCurrent.text,
                     stepsTextLabel: self.statisticQuiz.positionText(total: self.totalQuestionsQuiz) ))
+
+                self.activityIndicator?.hide()
             }
         }
     }
 
     func checkAnswer(answer: Bool, handle: (Bool) -> Void) {
         let result = questionCurrent?.correctAnswer == answer
+
         handle(result)
 
         guard let questionCurrent = questionCurrent else { return }
