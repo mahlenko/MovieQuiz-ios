@@ -1,5 +1,7 @@
 import UIKit
 
+<<<<<<< HEAD
+=======
 // MARK: - Structures
 
 struct QuizQuestion {
@@ -38,14 +40,25 @@ struct QuizAnswered {
     }
 }
 
+>>>>>>> project_sprint_3_start
 /**
     View controller Movie Quiz App
 */
-final class MovieQuizViewController: UIViewController {
+final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     // MARK: - Properties
 
+<<<<<<< HEAD
+    private var questions: QuestionFactoryProtocol?
+
+    private var storage: StatisticServiceProtocol = StatisticDefaultService()
+
+    private var alertPresenter: ResultAlertPresenter?
+
+    private var quiz: QuizModel?
+=======
     private var quizes: [Quiz] = []
     private var currentQuiz: Quiz?
+>>>>>>> project_sprint_3_start
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
@@ -55,139 +68,210 @@ final class MovieQuizViewController: UIViewController {
         return .portrait
     }
 
-    // MARK: - IBOutlets
+    // MARK: - Outlets
 
     @IBOutlet private var viewContainer: UIView!
-    @IBOutlet private weak var quizStepsLabel: ThemeUILabel!
+    @IBOutlet private weak var quizStepsLabel: UILabelTheme!
     @IBOutlet private weak var quizImageView: UIImageView!
     @IBOutlet private weak var quizQuestionLabel: UILabel!
-    @IBOutlet private weak var falseButton: ThemeUIButton!
-    @IBOutlet private weak var trueButton: ThemeUIButton!
+    @IBOutlet private weak var falseButton: UIButtonTheme!
+    @IBOutlet private weak var trueButton: UIButtonTheme!
+    @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
 
-    // MARK: - IBActions
+    // MARK: - Actions
 
     @IBAction private func falseButtonClicked(_ sender: Any) {
-        checkAnswer(answer: false)
+        check(answer: false)
     }
 
     @IBAction private func trueButtonClicked(_ sender: Any) {
-        checkAnswer(answer: true)
+        check(answer: true)
     }
 
     // MARK: - Lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        alertPresenter = ResultAlertPresenter(delegate: self)
         configuration()
+        create()
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        createQuiz()
+    func didLoadDataFromServer() {
+        activityIndicatorShowing(show: false)
+
+        guard let questions = questions else { return }
+        quiz = QuizModel(questions: questions)
+        next()
+    }
+
+    func didFailToLoadData(with error: Error) {
+        activityIndicatorShowing(show: false)
+
+        guard let alertPresenter = alertPresenter else {
+            print(error)
+            print(error.localizedDescription)
+            return
+        }
+
+        alertPresenter.view(
+            title: "😔",
+            message: "\(error.localizedDescription)",
+            actions: [
+                UIAlertAction(title: "Попробовать еще раз", style: .default) {_ in
+                    self.didLoadDataFromServer()
+                }
+            ])
+    }
+
+    func didFailToLoadQuestion(with error: Error) {
+        activityIndicatorShowing(show: false)
+        guard let alertPresenter = alertPresenter else { return }
+
+        alertPresenter.view(
+            title: "😔",
+            message: "\(error.localizedDescription)",
+            actions: [
+                UIAlertAction(title: "Попробовать еще раз", style: .default) {_ in
+                    guard let quiz = self.quiz else { return }
+                    quiz.showQuestion()
+                }
+            ])
+    }
+
+    func didReceiveNextQuestion(question: QuizStepViewModel?) {
+        guard let question = question else { return }
+
+        self.setImageBorderView()
+
+        quizImageView.image = question.image
+        quizQuestionLabel.text = question.question
+        quizStepsLabel.text = question.stepsTextLabel
+
+        self.activityIndicatorShowing(show: false)
+        enableControls(true)
     }
 
     // MARK: - Private methods
 
-    /// Creating new quiz (start/continue)
-    private func createQuiz() {
-        currentQuiz = Quiz()
-        show(quiz: currentQuiz?.show())
+    /// Создать игру/рестарт игры
+    private func create() {
+        activityIndicatorShowing(show: true)
+
+        let questionFactory = QuestionNetworkFactory(client: NetworkClient(), delegate: self)
+        questionFactory.load()
+        questions = questionFactory
     }
 
-    /// Show the quiz on the screen
-    private func show(quiz: QuizStepViewModel?) {
+    /// Проверка ответа пользователя
+    private func check(answer: Bool) {
         guard let quiz = quiz else { return }
 
-        quizImageView.image = quiz.image
-        quizQuestionLabel.text = quiz.question
-        quizStepsLabel.text = quiz.stepsTextLabel
+        enableControls(false)
 
-        guard let stepIndex = currentQuiz?.answered.position() else { return }
-        print(String("Showed a quiz question #\(stepIndex + 1)"))
-    }
-
-    private func checkAnswer(answer: Bool) {
-        guard let isCorrectAnswer = currentQuiz?.checkAnswer(answer: answer) else { return }
-
-        if isCorrectAnswer {
-            showSuccessImageView()
-            print("🎉 The answer is correct")
-        } else {
-            showFailedImageView()
-            print("😔 The answer is NOT correct")
+        if let isCorrectResult = quiz.checkAnswer(answer: answer) {
+            isCorrectResult ? successImageView() : failedImageView()
         }
-
-        enableButtons(enable: false)
 
         // Go to the next question or wait for results with a delay of 1 second
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            self.enableButtons(enable: true)
-            self.setImageBorderView()
-
-            let nextQuestion = self.currentQuiz?.show()
-            if nextQuestion == nil {
-                // complete quiz
-                guard let currentQuiz = self.currentQuiz else { return }
-                self.storeScore(quiz: currentQuiz)
-                self.showScore(currentQuiz: currentQuiz)
-            } else {
-                self.show(quiz: nextQuestion)
-            }
+            self.activityIndicatorShowing(show: true)
+            quiz.isComplete()
+                ? self.complete(quiz: quiz)
+                : self.next()
         }
     }
 
-    private func showScore(currentQuiz: Quiz) {
-        let score = ViewScore(quizes: quizes, currentQuiz: currentQuiz)
-
-        self.present(score.alertComplete { self.createQuiz() }, animated: true) {
-            // поиск слоя с фоном алерта
-            guard let window = UIApplication.shared.windows.first else { return }
-            guard let overlay = window.subviews.last?.layer.sublayers?.first else { return }
-
-            // замена цвета фона
-            self.animateOverlayColorAlert(overlay, color: StyleDefault.overlayColor)
-        }
+    /// Показать следующий вопрос
+    private func next() {
+        guard let quiz = quiz else { return }
+        quiz.nextQuestion()
     }
 
-    private func storeScore(quiz: Quiz) {
-        self.quizes.append(quiz)
+    /// Показать статистику
+    private func complete(quiz: QuizModel) {
+        let statistic = StatisticViewModel(
+            current: quiz.resultText(),
+            avgAccuracy: quiz.percentAccuracy(),
+            completedAt: Date()
+        )
+
+        storage.store(statistic: statistic)
+
+        // показать алерт с информацией о результатах
+
+        guard let alertPresenter = alertPresenter else { return }
+        guard let bestScrore = storage.bestQuiz() else { return }
+
+        let bestScore = "\(bestScrore.current) (\(bestScrore.completedAt.dateTimeString))"
+
+        alertPresenter.view(
+            title: statistic.avgAccuracy == 100 ? "🎉 Победа!" : "Этот раунд окончен",
+            message:
+                "Ваш результат: \(statistic.current)\n" +
+                "Количество сыграных квизов: \(storage.all().count)\n" +
+                "Рекорд: \(bestScore)\n" +
+                "Средняя точность: \(storage.average().rounded(length: 2))%",
+            actions: [
+                UIAlertAction(title: "Попробовать еще раз", style: .default) {_ in
+                    self.didLoadDataFromServer()
+                }
+            ]
+        )
     }
 
-    private func setImageBorderView(color: UIColor? = .none, width: CGFloat = .nan) {
-        self.quizImageView.layer.borderColor = color?.cgColor
-        self.quizImageView.layer.borderWidth = width
+    // MARK: - Helpers
+
+    /// Показать/спрятать лоадер
+    private func activityIndicatorShowing(show: Bool) {
+        activityIndicator.isHidden = !show
+        show
+            ? activityIndicator.startAnimating()
+            : activityIndicator.stopAnimating()
     }
 
-    private func showSuccessImageView() {
-        return setImageBorderView(
-            color: UIColor.appSuccess,
-            width: StyleDefault.borderWidthShowResult)
+    private func successImageView() {
+        setImageBorderView(UIColor.success)
+        print("🎉 The answer is correct")
     }
 
-    private func showFailedImageView() {
-        return setImageBorderView(
-            color: UIColor.appFail,
-            width: StyleDefault.borderWidthShowResult)
+    private func failedImageView() {
+        setImageBorderView(UIColor.fail)
+        print("😔 The answer is NOT correct")
     }
 
-    private func enableButtons(enable: Bool) {
-        trueButton.isEnabled = enable
-        falseButton.isEnabled = enable
+    private func setImageBorderView(_ color: UIColor? = .none) {
+        quizImageView.layer.borderColor = color?.cgColor
+        quizImageView.layer.borderWidth = color == .none ? .nan : 8.0
+    }
+
+    private func enableControls(_ enable: Bool) {
+        [trueButton, falseButton].forEach { $0?.isEnabled = enable }
     }
 
     private func configuration() {
-        viewContainer.backgroundColor = UIColor.appBackground
+        viewContainer.backgroundColor = UIColor.background
         quizImageView.layer.cornerRadius = 20
-        quizQuestionLabel.font = UIFont(name: StyleDefault.fontBold, size: 23.0)
+        quizImageView.image = UIImage(named: "Background")
+        quizQuestionLabel.font = UIFont(name: ThemeFonts.family.bold, size: ThemeFonts.size.large)
+        quizQuestionLabel.text = ""
 
+<<<<<<< HEAD
+        activityIndicator.color = UIColor.accent
+        activityIndicator.backgroundColor = UIColor.background
+        activityIndicator.layer.cornerRadius = 10
+        activityIndicator.isHidden = true
+=======
         print("✅ Configured storyboard")
     }
+>>>>>>> project_sprint_3_start
 
-    private func animateOverlayColorAlert(_ overlay: CALayer, color: UIColor, alpha: CGFloat = 0.6) {
-        let animation = CABasicAnimation(keyPath: "backgroundColor")
-        animation.timingFunction = CAMediaTimingFunction(name: .easeOut)
-        animation.speed = 0.15
+        enableControls(false)
 
+<<<<<<< HEAD
+        print("✅ Configured storyboard")
+=======
         overlay.add(animation, forKey: nil)
 
         // fix: моргание 🤷‍♂️, не знаю как это должно быть по другому
@@ -459,5 +543,6 @@ class ThemeUILabel: UILabel {
         font = UIFont(
             name: StyleDefault.fontMedium,
             size: StyleDefault.fontSize)
+>>>>>>> project_sprint_3_start
     }
 }
