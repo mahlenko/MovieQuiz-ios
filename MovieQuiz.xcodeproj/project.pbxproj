@@ -109,6 +109,7 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+<<<<<<< HEAD
 		8F474D27287254B000E1AE5F /* Services */ = {
 			isa = PBXGroup;
 			children = (
@@ -141,6 +142,8 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
+=======
+>>>>>>> project_sprint_3_start
 		A57EB35528A53DD700BC9A74 /* fonts */ = {
 			isa = PBXGroup;
 			children = (
@@ -221,7 +224,10 @@
 				A588934C28BC1409003711AD /* Theme */,
 				A551467628AACF7700996A13 /* Models */,
 				8F4738322848DE2A005DF65E /* Presentation */,
+<<<<<<< HEAD
 				8F474D27287254B000E1AE5F /* Services */,
+=======
+>>>>>>> project_sprint_3_start
 				ADF0CF75283FDAA10075F54D /* Helpers */,
 				8F4738332848DE46005DF65E /* Resources */,
 				AD1ABAB12831907B00B3E448 /* AppDelegate.swift */,
