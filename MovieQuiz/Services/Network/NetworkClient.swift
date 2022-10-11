@@ -8,12 +8,27 @@
 import Foundation
 
 class NetworkClient: NetworkRouting {
+    var activityIndicator: ActivityIndicatorProtocol?
+
     // MARK: - Public methods
 
     public func get(url: URL, handler: @escaping (Result<Data, Error>) -> Void) {
+        // Покажем индикатор загрузки
+        if let activityIndicator {
+            activityIndicator.show()
+        }
+
         let urlRequest = URLRequest(url: url)
 
-        URLSession.shared.dataTask(with: urlRequest) { data, response, error in
+        URLSession.shared.dataTask(with: urlRequest) { [weak self] data, response, error in
+            // Спрячем индикатор загрузки
+            guard let self = self else { return }
+            if let activityIndicator = self.activityIndicator {
+                DispatchQueue.main.async {
+                    activityIndicator.hide()
+                }
+            }
+
             // Проверим, пришла ли ошибка
             if let error = error {
                 handler(.failure(error))
