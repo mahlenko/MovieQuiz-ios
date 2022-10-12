@@ -16,8 +16,8 @@ final class StatisticDefaultService: StatisticServiceProtocol {
 
     // MARK: - Public methods
 
-    func all() -> [StatisticViewModel] {
-        var results: [StatisticViewModel] = []
+    func all() -> [StatisticQuizViewModel] {
+        var results: [StatisticQuizViewModel] = []
 
         do {
             try self.getUserData().forEach { statistic in
@@ -25,7 +25,7 @@ final class StatisticDefaultService: StatisticServiceProtocol {
                     return
                 }
 
-                results.append(try JSONDecoder().decode(StatisticViewModel.self, from: statistic))
+                results.append(try JSONDecoder().decode(StatisticQuizViewModel.self, from: statistic))
             }
         } catch {
             print("Error: \(error.localizedDescription)")
@@ -34,7 +34,7 @@ final class StatisticDefaultService: StatisticServiceProtocol {
         return results
     }
 
-    func store(statistic: StatisticViewModel) {
+    func store(statistic: StatisticQuizViewModel) {
         var storage = getUserData()
 
         do {
@@ -49,7 +49,7 @@ final class StatisticDefaultService: StatisticServiceProtocol {
         }
     }
 
-    func bestQuiz() -> StatisticViewModel? {
+    func bestQuiz() -> StatisticQuizViewModel? {
         guard var bestScore = self.all().first else { return nil }
 
         for score in self.all() where score.avgAccuracy >= bestScore.avgAccuracy {

@@ -7,23 +7,28 @@
 
 import Foundation
 
-class NetworkClient {
+class NetworkClient: NetworkRouting {
     // MARK: - Public methods
 
     public func get(url: URL, handler: @escaping (Result<Data, Error>) -> Void) {
         let urlRequest = URLRequest(url: url)
 
-        let task: URLSessionDataTask = URLSession.shared.dataTask(with: urlRequest) { data, response, error in
-            if let error = error { handler(.failure(error)) }
+        URLSession.shared.dataTask(with: urlRequest) { data, response, error in
+            // Проверим, пришла ли ошибка
+            if let error = error {
+                handler(.failure(error))
+            }
+
+            // Проверим, пришел ли успешный код ответа
             if let response = response as? HTTPURLResponse,
                 response.statusCode != 200 {
                 handler(.failure(NetworkError.invalideResponseCode))
             }
 
+            // Вернем даныне
             guard let data = data else { return }
             handler(.success(data))
         }
-
-        task.resume()
+        .resume()
     }
 }

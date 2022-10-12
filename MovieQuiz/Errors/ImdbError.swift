@@ -1,12 +1,21 @@
 //
-//  ImdbErrors.swift
+//  IMDBError.swift
 //  MovieQuiz
 //
-//  Created by Sergey on 08.09.2022.
+//  Created by Sergey on 08.10.2022.
 //
 
 import Foundation
 
-enum ImdbError: Error {
-    case invalidKey
+enum IMDBError: Error {
+    case invalidRequstException(String)
+}
+
+extension IMDBError: LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case let .invalidRequstException(message):
+            return NSLocalizedString("IMDB API Error: \(message)", comment: "")
+        }
+    }
 }

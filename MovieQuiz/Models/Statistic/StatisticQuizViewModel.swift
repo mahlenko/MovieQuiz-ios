@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct StatisticViewModel: Codable {
+struct StatisticQuizViewModel: Codable {
     let current: String
     let avgAccuracy: Float
     let completedAt: Date

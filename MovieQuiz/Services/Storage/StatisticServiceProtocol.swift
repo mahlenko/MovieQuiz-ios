@@ -6,9 +6,9 @@
 //
 
 protocol StatisticServiceProtocol {
-    func all() -> [StatisticViewModel]
-    func store(statistic: StatisticViewModel)
-    func bestQuiz() -> StatisticViewModel?
+    func all() -> [StatisticQuizViewModel]
+    func store(statistic: StatisticQuizViewModel)
+    func bestQuiz() -> StatisticQuizViewModel?
     func average() -> Float
     func destroy()
 }

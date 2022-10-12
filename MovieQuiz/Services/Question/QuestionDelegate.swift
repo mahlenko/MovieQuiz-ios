@@ -7,9 +7,9 @@
 
 import Foundation
 
-protocol QuestionFactoryDelegate {
-    func didReceiveNextQuestion(question: QuizStepViewModel?)
+protocol QuestionDelegate: AnyObject {
     func didLoadDataFromServer()
     func didFailToLoadData(with error: Error)
+    func didViewQuestion(question: QuestionViewModel)
     func didFailToLoadQuestion(with error: Error)
 }

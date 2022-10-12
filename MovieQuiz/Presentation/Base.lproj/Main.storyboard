@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21223" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21225" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina4_7" orientation="portrait" appearance="dark"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21204"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21207"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -32,6 +32,7 @@
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1/10" textAlignment="right" lineBreakMode="middleTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jlz-Sm-pAg" customClass="UILabelTheme" customModule="MovieQuiz" customModuleProvider="target">
                                                 <rect key="frame" x="167.5" y="0.0" width="167.5" height="20.5"/>
+                                                <accessibility key="accessibilityConfiguration" identifier="index"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <color key="textColor" name="default"/>
                                                 <color key="highlightedColor" name="default"/>
@@ -40,13 +41,15 @@
                                     </stackView>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" verticalCompressionResistancePriority="749" image="Background" translatesAutoresizingMaskIntoConstraints="NO" id="2fP-IF-Jbs">
                                         <rect key="frame" x="0.0" y="40.5" width="335" height="476"/>
-                                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="backgroundColor" name="backgroundImage"/>
+                                        <accessibility key="accessibilityConfiguration" identifier="poster"/>
                                         <constraints>
                                             <constraint firstAttribute="width" relation="lessThanOrEqual" secondItem="2fP-IF-Jbs" secondAttribute="height" multiplier="2:3" priority="750" id="bIp-kb-eAA"/>
                                         </constraints>
                                     </imageView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" text="Question " textAlignment="center" lineBreakMode="headTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FFA-Mx-yNc">
                                         <rect key="frame" x="0.0" y="536.5" width="335" height="20.5"/>
+                                        <accessibility key="accessibilityConfiguration" identifier="question"/>
                                         <rect key="contentStretch" x="0.0" y="0.14999999999999999" width="1" height="1"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <color key="textColor" name="default"/>
@@ -59,6 +62,7 @@
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dnn-xf-hRH" customClass="UIButtonTheme" customModule="MovieQuiz" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="0.0" width="157.5" height="60"/>
                                                 <color key="backgroundColor" name="default"/>
+                                                <accessibility key="accessibilityConfiguration" identifier="no"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                 <state key="normal" title="Нет"/>
@@ -69,6 +73,7 @@
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="W6D-E8-qoe" customClass="UIButtonTheme" customModule="MovieQuiz" customModuleProvider="target">
                                                 <rect key="frame" x="177.5" y="0.0" width="157.5" height="60"/>
                                                 <color key="backgroundColor" name="default"/>
+                                                <accessibility key="accessibilityConfiguration" identifier="yes"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="60" id="JZs-uf-kcI"/>
                                                 </constraints>
@@ -114,6 +119,9 @@
     </scenes>
     <resources>
         <image name="Background" width="375" height="812"/>
+        <namedColor name="backgroundImage">
+            <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
         <namedColor name="default">
             <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>

@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-struct QuizStepViewModel {
+struct QuestionViewModel {
     let image: UIImage?
     let question: String
     let stepsTextLabel: String
